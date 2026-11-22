@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Danilo Vargas da Silva</title>
+<meta name="description" content="Senior Software Engineer & Tech Lead moving into AI engineering. From precision machining to software to AI: building neural networks, MCP servers, fine-tuned models and computer vision projects in public.">
+<meta property="og:title" content="Danilo Vargas da Silva">
+<meta property="og:description" content="From precision machining to software to AI. Building in public.">
+<meta property="og:image" content="assets/profile.jpg">
+<link rel="stylesheet" href="assets/fontawesome/css/fontawesome.min.css">
+<link rel="stylesheet" href="assets/fontawesome/css/brands.min.css">
+<link rel="stylesheet" href="assets/fontawesome/css/solid.min.css">
+<style>
+@font-face{font-family:"Archivo";font-style:normal;font-display:swap;font-weight:100 900;font-stretch:62% 125%;src:url(assets/fonts/archivo-latin.woff2) format("woff2-variations");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Archivo";font-style:normal;font-display:swap;font-weight:100 900;font-stretch:62% 125%;src:url(assets/fonts/archivo-latin-ext.woff2) format("woff2-variations");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Literata";font-style:normal;font-display:swap;font-weight:200 900;src:url(assets/fonts/literata-latin.woff2) format("woff2-variations");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Literata";font-style:normal;font-display:swap;font-weight:200 900;src:url(assets/fonts/literata-latin-ext.woff2) format("woff2-variations");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+:root{
+  /* Prancha de desenho técnico: papel branco frio, traço grafite, azul de tinta de traçagem como única cor.
+     Layout: carimbo no topo, cota da trajetória, depois uma coluna de leitura com índice lateral. */
+  --paper:#F7F8F7; --sheet:#FFFFFF; --ink:#14181B; --muted:#5D676D; --line:#D6DCDB; --grid:#E6EBEA; --blue:#1F3FBF; --blue-soft:#E7EBFA;
+  --display:"Archivo", "Arial Narrow", system-ui, sans-serif;
+  --body:"Literata", Georgia, serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --paper:#101417; --sheet:#161C20; --ink:#E5EAEC; --muted:#98A3A9; --line:#2B353B; --grid:#1C2429; --blue:#8EA4FF; --blue-soft:#1E2747; color-scheme:dark; }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:1.0625rem;line-height:1.72}
+a{color:var(--blue);text-underline-offset:3px;text-decoration-thickness:1px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:2px}
+h1,h2,h3{font-family:var(--display);font-stretch:85%;margin:0;text-wrap:balance}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+
+/* ---------- topo: pontos interativos + ponte rolante ---------- */
+.progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:20;pointer-events:none}
+.progress i{display:block;height:100%;width:0;background:var(--blue)}
+.hero{position:relative;background:var(--paper);border-bottom:1px solid var(--line);overflow:hidden}
+#dots{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero-in{position:relative;z-index:1}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-family:var(--display);font-stretch:90%}
+.topbar .mark{font-weight:700;color:var(--ink);text-decoration:none;letter-spacing:.01em}
+.topbar nav{display:flex;gap:20px;flex-wrap:wrap}
+.topbar nav a{color:var(--muted);text-decoration:none;font-weight:500}
+.topbar nav a:hover{color:var(--blue)}
+@media (max-width:560px){.topbar{flex-direction:column;align-items:flex-start;gap:8px}.topbar .mark{white-space:nowrap}.topbar nav{gap:14px;font-size:.92rem}}
+.intro{padding:44px 0 4px;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:40px;align-items:center}
+@media (max-width:900px){.intro{grid-template-columns:1fr;padding-top:28px;gap:24px}}
+.intro h1{font-size:clamp(2.6rem,7vw,5rem);line-height:.92;font-weight:800;font-stretch:70%;letter-spacing:-.01em}
+.intro .sub{font-family:var(--body);font-size:1.25rem;line-height:1.5;margin:18px 0 0;max-width:36ch;color:var(--ink);min-height:3em}
+.typed{color:var(--blue);font-weight:600}
+.caret{display:inline-block;width:2px;height:1.05em;background:var(--blue);margin-left:2px;vertical-align:-.15em;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:28px 0 0;max-width:620px}
+@media (max-width:560px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stats div{border-top:2px solid var(--ink);padding-top:8px}
+.stats dt{font-family:var(--display);font-stretch:70%;font-weight:800;font-size:1.9rem;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.stats dd{margin:4px 0 0;font-family:var(--display);font-stretch:90%;font-size:.82rem;line-height:1.25;color:var(--muted)}
+.crane{margin:0;background:var(--sheet);border:2px solid var(--ink);padding:0}
+.crane canvas{display:block;width:100%;height:auto;image-rendering:pixelated}
+.crane figcaption{font-family:var(--display);font-stretch:90%;font-size:.82rem;color:var(--muted);padding:6px 10px;border-top:2px solid var(--ink)}
+@media (max-width:900px){.crane{max-width:360px}}
+
+/* cota da trajetória */
+.dim{padding:36px 0 34px}
+.dim svg{width:100%;height:auto;display:block;overflow:visible}
+.dim .l{stroke:var(--ink);stroke-width:1.2;fill:none}
+.dim .ext{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 3}
+.dim .arr{fill:var(--ink)}
+.dim .now{fill:var(--blue)}
+.dim text{font-family:var(--display);font-stretch:85%;fill:var(--ink)}
+.dim .yr{font-size:15px;font-weight:700}
+.dim .lb{font-size:13px;fill:var(--muted)}
+.dim .tol{font-size:12px;fill:var(--blue);font-weight:600}
+.dim-wrap{overflow-x:auto;position:relative}
+#walkers{position:absolute;left:0;top:0;display:block;cursor:default}
+.dim-wrap svg{min-width:640px}
+
+/* ---------- corpo: índice lateral + coluna de leitura ---------- */
+.body{display:grid;grid-template-columns:220px minmax(0,1fr);gap:52px;padding:48px 20px 72px;max-width:1040px;margin:0 auto}
+@media (max-width:860px){.body{grid-template-columns:1fr;gap:32px;padding-top:32px}}
+.side{font-family:var(--display);font-stretch:92%}
+@media (min-width:861px){.side{position:sticky;top:24px;align-self:start}}
+.side img{width:150px;height:150px;object-fit:cover;border-radius:50%;border:2px solid var(--ink);display:block;margin-bottom:14px}
+.side-name{font-size:1.3rem;font-weight:700;font-stretch:80%;line-height:1.15}
+.side-role{margin:4px 0 14px;color:var(--muted);font-size:.95rem;line-height:1.35}
+.side-links{list-style:none;margin:0;padding:0;display:grid;gap:9px;font-size:.98rem}
+.side-links li{display:flex;align-items:center;gap:10px;color:var(--ink)}
+.side-links i{color:var(--muted);width:18px;text-align:center}
+.side-links a{color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px}
+.side-links a:hover{color:var(--blue)}
+.side-links a:hover i{color:var(--blue)}
+@media (max-width:860px){.side{display:grid;grid-template-columns:96px 1fr;gap:4px 16px;align-items:center}.side img{width:96px;height:96px;margin:0;grid-row:1/3}.side-links{grid-column:1/-1;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:12px}}
+section{margin-bottom:56px;scroll-margin-top:20px}
+section > h2{font-size:1.7rem;font-weight:700;font-stretch:75%;margin-bottom:16px;display:flex;align-items:baseline;gap:12px}
+section > h2::after{content:"";flex:1;border-bottom:1px solid var(--line);transform:translateY(-6px)}
+p{margin:0 0 14px;max-width:66ch}
+
+/* news como régua */
+.news{list-style:none;margin:0;padding:0;position:relative}
+.news::before{content:"";position:absolute;left:84px;top:6px;bottom:6px;border-left:1px solid var(--ink)}
+.news li{display:grid;grid-template-columns:84px 1fr;gap:0;padding:6px 0;position:relative}
+.news li::before{content:"";position:absolute;left:84px;top:18px;width:10px;border-top:1px solid var(--ink)}
+.news li::before{transition:width .2s}
+.news li:hover::before{width:22px;border-color:var(--blue)}
+.news li.big::before{width:16px;border-top-width:2px;border-color:var(--blue)}
+.news time{font-family:var(--display);font-stretch:85%;font-weight:600;font-size:.95rem;color:var(--muted);font-variant-numeric:tabular-nums;padding-top:3px}
+.news span{padding-left:26px}
+.news li.big span strong{color:var(--blue)}
+
+/* projetos */
+.feature{background:var(--sheet);border:2px solid var(--ink);padding:20px 22px;margin-bottom:16px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 18px;align-items:start}
+.feature h3{font-size:1.35rem;font-weight:700;font-stretch:80%}
+.feature p{grid-column:1/-1;margin:0}
+.place{font-family:var(--display);font-stretch:70%;font-weight:800;font-size:2.6rem;line-height:.9;color:var(--blue);text-align:right;grid-row:1/3;grid-column:2}
+.place small{display:block;font-size:.8rem;font-weight:600;font-stretch:90%;color:var(--muted)}
+.meta{font-family:var(--display);font-stretch:90%;font-size:.88rem;color:var(--muted)}
+.plan{background:var(--sheet);border:1px solid var(--line);margin-bottom:16px}
+.plan header{padding:18px 22px 10px}
+.plan h3{font-size:1.2rem;font-weight:700;font-stretch:80%}
+.plan header p{margin:4px 0 0;font-size:.98rem}
+.plan ol{list-style:none;margin:0;padding:0}
+.plan li{display:grid;grid-template-columns:44px minmax(0,1fr) 92px;gap:12px;align-items:center;padding:10px 22px;border-top:1px solid var(--line);font-size:.97rem}
+.plan li b{font-family:var(--display);font-stretch:80%;font-weight:700;color:var(--muted)}
+.plan li code{font-family:var(--display);font-stretch:90%;font-weight:600;font-size:.97rem;color:var(--ink)}
+.bar{height:6px;background:var(--grid);position:relative}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--blue);transform-origin:left;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.bar.wait i{transform:scaleX(0)}
+.plan li.now{background:var(--blue-soft)}
+.plan li .st{font-family:var(--display);font-stretch:90%;font-size:.8rem;color:var(--muted);text-align:right}
+@media (max-width:560px){.plan li{grid-template-columns:36px 1fr}.plan li .bar,.plan li .st{grid-column:2}}
+.small-card{border-left:3px solid var(--ink);padding:4px 0 4px 16px}
+.small-card h3{font-size:1.15rem;font-weight:700;font-stretch:80%}
+
+/* experiência */
+.xp{display:grid;gap:0}
+.job{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;padding:16px 0;border-top:1px solid var(--line)}
+.job:first-child{border-top:0;padding-top:0}
+.job .when{font-family:var(--display);font-stretch:85%;font-weight:600;color:var(--muted);font-size:.95rem;font-variant-numeric:tabular-nums}
+.job h3{font-size:1.15rem;font-weight:700;font-stretch:80%}
+.job ul{margin:6px 0 0;padding-left:1.1rem}
+.job li{margin:3px 0}
+.job li strong{font-family:var(--display);font-stretch:85%;font-weight:700;color:var(--blue);font-size:1.05em}
+@media (max-width:560px){.job{grid-template-columns:1fr;gap:2px}}
+
+/* habilidades como tabela de especificação */
+.spec{width:100%;border-collapse:collapse;font-size:.98rem}
+.spec th{font-family:var(--display);font-stretch:85%;font-weight:600;color:var(--muted);text-align:left;vertical-align:top;padding:9px 18px 9px 0;width:130px;border-top:1px solid var(--line)}
+.spec td{padding:9px 0;border-top:1px solid var(--line)}
+.spec tr:first-child th,.spec tr:first-child td{border-top:0}
+
+.contact{background:var(--ink);color:var(--paper);padding:26px 28px}
+.contact p{color:var(--paper);margin:0 0 14px}
+.contact a{color:var(--paper);text-decoration-color:var(--blue);text-decoration-thickness:2px}
+.contact .big{font-family:var(--display);font-stretch:75%;font-weight:700;font-size:1.6rem;line-height:1.2;margin-bottom:10px}
+@media (prefers-color-scheme: dark){.contact{background:var(--blue-soft);color:var(--ink)}.contact p,.contact a{color:var(--ink)}}
+
+/* seção CV */
+.cv-head{display:flex;justify-content:flex-start;margin:-4px 0 8px}
+.dl{display:inline-flex;align-items:center;gap:10px;font-family:var(--display);font-stretch:90%;font-weight:700;color:var(--paper);background:var(--ink);padding:10px 16px;text-decoration:none}
+.dl:hover{background:var(--blue);color:#fff}
+.cv-h{font-size:1.05rem;font-weight:700;font-stretch:85%;color:var(--blue);margin:28px 0 8px}
+.note{margin:2px 0 0;font-size:.97rem;color:var(--muted)}
+.certs{margin:0;padding-left:1.1rem}
+.certs li{margin:3px 0}
+.print-only{display:none}
+@media print{
+  @page{size:A4;margin:14mm 14mm 14mm 14mm}
+  :root{--paper:#fff;--sheet:#fff;--ink:#111;--muted:#444;--line:#ccc;--blue:#1F3FBF;color-scheme:light}
+  body{font-size:10.5pt;line-height:1.45;background:#fff}
+  .hero,.progress,.side,#about,#news,#projects,#contact,footer,.screen-only{display:none!important}
+  .body{display:block;padding:0;max-width:none}
+  section{margin:0}
+  #cv > h2{display:none}
+  .print-only{display:block}
+  .cv-name{font-family:var(--display);font-stretch:75%;font-weight:800;font-size:22pt;margin:0;line-height:1.1}
+  .cv-contact{font-family:var(--display);font-stretch:90%;font-size:9pt;color:#444;margin:4px 0 0;max-width:none}
+  .cv-h{margin:14px 0 4px;font-size:11pt;break-after:avoid}
+  .job{padding:6px 0;grid-template-columns:110px minmax(0,1fr);break-inside:avoid}
+  .job h3{font-size:10.5pt}
+  .job li{margin:1px 0}
+  .spec th,.spec td{padding:4px 12px 4px 0}
+  a{color:inherit;text-decoration:none}
+}
+@media (prefers-reduced-motion: reduce){.caret{animation:none}.bar i{transition:none}*{scroll-behavior:auto}}
+html{scroll-behavior:smooth}
+footer{border-top:1px solid var(--line);font-family:var(--display);font-stretch:90%;font-size:.88rem;color:var(--muted)}
+footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<div class="progress" aria-hidden="true"><i id="readbar"></i></div>
+<header class="hero">
+  <canvas id="dots" aria-hidden="true"></canvas>
+  <div class="wrap hero-in">
+    <div class="topbar">
+      <a class="mark" href="#">D. Vargas da Silva</a>
+      <nav aria-label="Sections">
+        <a href="#about">About</a>
+        <a href="#news">News</a>
+        <a href="#projects">Projects</a>
+        <a href="#cv">CV</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+
+    <div class="intro">
+      <div class="intro-text">
+        <h1>Danilo Vargas<br>da Silva</h1>
+        <p class="sub">Software engineer and tech lead, now building <span class="typed" id="typed">AI agents</span><span class="caret" aria-hidden="true"></span> in public.</p>
+        <dl class="stats">
+          <div><dt><span class="count" data-to="1000000" data-suffix="+">1,000,000+</span></dt><dd>users on the platforms I build</dd></div>
+          <div><dt><span class="count" data-to="8" data-suffix=" TB">8 TB</span></dt><dd>PostgreSQL platform</dd></div>
+          <div><dt><span class="count" data-to="40" data-prefix="−" data-suffix="%">−40%</span></dt><dd>critical incidents</dd></div>
+          <div><dt><span class="count" data-to="5" data-suffix="th">5th</span></dt><dd>OpenAI DevDay Hackathon</dd></div>
+        </dl>
+      </div>
+      <figure class="crane">
+        <canvas id="crane" width="360" height="270" aria-label="A pixel-art version of Danilo operating a workshop crane, moving project blocks P0 to P8 from planned to shipped"></canvas>
+        <figcaption>Shipping P0–P8, one block at a time.</figcaption>
+      </figure>
+    </div>
+
+    <div class="dim" aria-label="Career path: machining in 2017, software in 2020, tech lead in 2025, AI in 2026">
+      <div class="dim-wrap">
+      <svg viewBox="0 0 1000 120" role="img" aria-hidden="true">
+        <line class="ext" x1="20" y1="10" x2="20" y2="70"/>
+        <line class="ext" x1="320" y1="10" x2="320" y2="70"/>
+        <line class="ext" x1="780" y1="10" x2="780" y2="70"/>
+        <line class="ext" x1="980" y1="10" x2="980" y2="70"/>
+        <line class="l" x1="28" y1="40" x2="312" y2="40"/>
+        <polygon class="arr" points="20,40 32,35 32,45"/><polygon class="arr" points="320,40 308,35 308,45"/>
+        <line class="l" x1="328" y1="40" x2="772" y2="40"/>
+        <polygon class="arr" points="320,40 332,35 332,45"/><polygon class="arr" points="780,40 768,35 768,45"/>
+        <line class="l" x1="788" y1="40" x2="972" y2="40"/>
+        <polygon class="arr" points="780,40 792,35 792,45"/><polygon class="now" points="980,40 968,35 968,45"/>
+        <text class="yr" x="20" y="92" text-anchor="start">2017</text>
+        <text class="yr" x="320" y="92" text-anchor="middle">2020</text>
+        <text class="yr" x="780" y="92" text-anchor="middle">2025</text>
+        <text class="yr" x="980" y="92" text-anchor="end">2026</text>
+        <text class="lb" x="170" y="112" text-anchor="middle">precision machining · ±0.01 mm</text>
+        <text class="lb" x="550" y="112" text-anchor="middle">software: support tools → full stack → data platforms · 1M+ users</text>
+        <text class="tol" x="880" y="112" text-anchor="middle">tech lead → AI, building in public</text>
+      </svg>
+      <canvas id="walkers" aria-label="Small robots walking along the timeline. Click one to make it jump."></canvas>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="body">
+  <aside class="side">
+    <img src="assets/profile.jpg" alt="Danilo Vargas da Silva">
+    <h2 class="side-name">Danilo Vargas da Silva</h2>
+    <p class="side-role">Senior Software Engineer &amp; Tech Lead</p>
+    <ul class="side-links">
+      <li><i class="fa-solid fa-location-dot fa-fw" aria-hidden="true"></i>Sumaré SP, Brazil</li>
+      <li><i class="fa-solid fa-building fa-fw" aria-hidden="true"></i>Desktop</li>
+      <li><a href="https://www.linkedin.com/in/danilovargasdasilva"><i class="fa-brands fa-linkedin fa-fw" aria-hidden="true"></i>LinkedIn</a></li>
+      <li><a href="https://github.com/DaniloVargasDaSilva"><i class="fa-brands fa-github fa-fw" aria-hidden="true"></i>GitHub</a></li>
+      <li><a href="mailto:danilo.vargas.silva.br@gmail.com"><i class="fa-solid fa-envelope fa-fw" aria-hidden="true"></i>Email</a></li>
+      <li><a href="cv.pdf"><i class="fa-solid fa-file-lines fa-fw" aria-hidden="true"></i>CV (PDF)</a></li>
+      <!-- Quando tiver: <li><a href="https://orcid.org/SEU-ID"><i class="fa-brands fa-orcid fa-fw"></i>ORCID</a></li>
+           <li><a href="https://scholar.google.com/citations?user=SEU-ID"><i class="fa-solid fa-graduation-cap fa-fw"></i>Google Scholar</a></li>
+           <li><a href="https://huggingface.co/SEU-USUARIO"><i class="fa-solid fa-face-smile fa-fw"></i>Hugging Face</a></li> -->
+    </ul>
+  </aside>
+
+  <main>
+    <section id="about">
+      <h2>About</h2>
+      <p>I'm a Senior Software Engineer and Tech Lead at Desktop, a telecom and SaaS company in Brazil, where I lead architecture across three squads for a platform with over a million users. Most of my work sits where data, backend and product meet: an 8 TB PostgreSQL platform that replaced 400+ silos, a dispatch engine that made technician allocation 65% more efficient, and AI-assisted workflows with pre-merge evals that made my squads ship faster without regressions.</p>
+      <p>Now I'm moving toward AI engineering and forward deployed work. Over the next year I'm building neural networks from scratch, MCP servers, a small GPT trained in Portuguese, computer vision models and a fine-tuning study that compares local and paid models. Each project ships with code, results and a short write-up.</p>
+      <p>Before software, I trained as a machining technician and assembled industrial generators. I still approach systems the same way: measure first, respect the tolerances, find the root cause.</p>
+    </section>
+
+    <section id="news">
+      <h2>News</h2>
+      <ul class="news">
+        <li class="big"><time datetime="2026-11">Nov 2026</time><span>Built and shipped <a href="https://confirmacnpj.vercel.app/"><strong>ConfirmaCNPJ</strong></a> in one day at the Hack Brasil meetup in Campinas. Now building the official Hack Brasil project with Iridiana Amarante for the online phase.</span></li>
+        <li class="big"><time datetime="2026-11">Nov 2026</time><span>Started a 12-month build-in-public roadmap: neural networks from scratch, MCP servers, fine-tuning and computer vision.</span></li>
+        <li class="big"><time datetime="2026-10">Oct 2026</time><span>Placed <strong>5th</strong> at the OpenAI DevDay Hackathon with an AI tool that finds discrepancies between contracts and invoices.</span></li>
+        <li><time datetime="2026-10">Oct 2026</time><span>Attended OpenAI DevDay in person.</span></li>
+        <li><time datetime="2025-12">Dec 2025</time><span>Became Tech Lead, leading architecture across three squads.</span></li>
+        <li><time datetime="2024-08">Aug 2024</time><span>Started consolidating 400+ data silos into one 8 TB PostgreSQL platform, cutting data platform cost 8x.</span></li>
+        <li><time datetime="2021-09">Sep 2021</time><span>Started contributing to the Supabase community.</span></li>
+        <li><time datetime="2020-07">Jul 2020</time><span>Moved from industrial machining into software, building internal tools for technical support.</span></li>
+      </ul>
+    </section>
+
+    <section id="projects">
+      <h2>Projects</h2>
+
+      <article class="feature">
+        <div>
+          <div class="meta">Nov 2026 · Hack Brasil meetup, Campinas · solo · <a href="https://github.com/DaniloVargasDaSilva/confirmacnpj-">code</a> · MIT</div>
+          <h3><a href="https://confirmacnpj.vercel.app/">ConfirmaCNPJ</a></h3>
+        </div>
+        <div class="place">1<small>day, idea to deploy</small></div>
+        <p>Paste a website or a CNPJ and find out whether the Brazilian company behind it is real, active and owns that site, before you pay. Firecrawl scrapes the site for the CNPJ and runs three searches in parallel; Registro.br and Federal Revenue data fill in the rest. The result is a verification slip with a trust score and the reason behind every warning. Next.js on Vercel, no database, in Portuguese and English.</p>
+      </article>
+
+      <article class="feature">
+        <div>
+          <div class="meta">Oct 2026 · OpenAI DevDay Hackathon · team project · <a href="https://github.com/DaniloVargasDaSilva/hackaton_openai_conforme_contratos">code</a></div>
+          <h3><a href="https://hackaton-openai-conforme-contratos.vercel.app/">Conforme: contract &amp; invoice discrepancy analysis</a></h3>
+        </div>
+        <div class="place">5th<small>place</small></div>
+        <p>An AI tool that reads contracts and invoices and flags where amounts and terms don't match, in seconds.</p>
+      </article>
+
+      <article class="plan">
+        <header>
+          <div class="meta">Nov 2026 – Nov 2027 · building in public</div>
+          <h3>A 12-month AI roadmap</h3>
+          <p>Nine projects, each published with code, results and a write-up. Links appear here as each one ships.</p>
+        </header>
+        <ol>
+          <!-- Para atualizar: mude a largura da barra (style="width:40%") e o texto de status. Quando publicar, troque <code> por um link. -->
+          <li class="now"><b>P0</b><span><code>micrograd-notes</code> · an autograd engine written from scratch</span><span><span class="bar"><i style="width:10%"></i></span><span class="st">building</span></span></li>
+          <li><b>P1</b><span><code>mlp-mnist</code> · a neural network in NumPy, then PyTorch</span><span class="st">planned</span></li>
+          <li><b>P2</b><span><code>mcp-servers</code> · arXiv research and ML experiment tracking for Claude</span><span class="st">planned</span></li>
+          <li><b>P3</b><span><code>gpt-ptbr</code> · a small GPT trained on Portuguese text</span><span class="st">planned</span></li>
+          <li><b>P4</b><span><code>cnn-classifier</code> · CNN from scratch vs transfer learning</span><span class="st">planned</span></li>
+          <li><b>P5</b><span><code>yolo-detector</code> · object detection on my own images</span><span class="st">planned</span></li>
+          <li><b>P6</b><span><code>finetune-ptbr</code> · local LoRA vs cloud fine-tuning vs prompting</span><span class="st">planned</span></li>
+          <li><b>P7</b><span><code>room-3d</code> · NeRF vs Gaussian Splatting</span><span class="st">planned</span></li>
+          <li><b>P8</b><span><code>tiny-jepa</code> · a small JEPA with a research-style report</span><span class="st">planned</span></li>
+        </ol>
+      </article>
+
+      <div class="small-card">
+        <div class="meta">Since 2021 · open source community</div>
+        <h3>Supabase</h3>
+        <p>Early adopter and community contributor, working with the core team on PostgreSQL multi-schema support, API gateway routing and pgvector patterns for AI workloads.</p>
+      </div>
+    </section>
+
+    <section id="cv">
+      <h2>CV</h2>
+      <div class="cv-head">
+        <div class="print-only">
+          <p class="cv-name">Danilo Vargas da Silva</p>
+          <p class="cv-contact">Senior Software Engineer &amp; Tech Lead · Sumaré SP, Brazil · danilo.vargas.silva.br@gmail.com · linkedin.com/in/danilovargasdasilva · github.com/danilovargasdasilva · danilovargasdasilva.github.io</p>
+        </div>
+        <a class="dl screen-only" href="cv.pdf"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i>Download CV (PDF)</a>
+      </div>
+
+      <h3 class="cv-h">Education</h3>
+      <div class="xp">
+        <div class="job"><div class="when">2024 – 2027</div><div><h3>B.Sc. in Computer Science · Anhanguera</h3><p class="note">In progress, online, while working full time.</p></div></div>
+        <div class="job"><div class="when">2017 – 2018</div><div><h3>Technical Degree in Mechanics · SENAI</h3><p class="note">Precision machining, metrology and technical drawing.</p></div></div>
+      </div>
+
+      <h3 class="cv-h">Work experience</h3>
+      <div class="xp">
+        <div class="job">
+          <div class="when">Dec 2025 – now</div>
+          <div>
+            <h3>Senior Software Engineer &amp; Tech Lead · Desktop</h3>
+            <ul>
+              <li>Lead architecture across three squads for a platform with <strong>1M+</strong> users.</li>
+              <li>Cut critical production incidents <strong>40%</strong> with testing baselines, structured logging and SLO dashboards.</li>
+              <li>Squads ship <strong>35%</strong> faster without regressions, pairing Claude Code and Cursor with pre-merge evals.</li>
+              <li>Mentor six engineers through code reviews and design RFCs.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="job">
+          <div class="when">Jun – Nov 2025</div>
+          <div>
+            <h3>Senior Software Engineer, Backend &amp; Core Systems · Desktop</h3>
+            <ul>
+              <li>Rebuilt the dispatch engine in Python and React: technician allocation <strong>65%</strong> more efficient.</li>
+              <li>Built a Python (Polars) pipeline that moved operational data <strong>8x</strong> faster into analytical stores.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="job">
+          <div class="when">Aug 2024 – May 2025</div>
+          <div>
+            <h3>Software Engineer, Data Platforms &amp; Backend · Desktop</h3>
+            <ul>
+              <li>Consolidated 400+ data silos into one <strong>8 TB</strong> PostgreSQL warehouse, 8x cheaper than managed vendors.</li>
+              <li>Kept queries under a second on 10 GB+ tables by tuning partitioning, WAL and autovacuum.</li>
+              <li>Scaled automated reporting from 5 to 30+ reports per hour with CDC pipelines and Python workers.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="job">
+          <div class="when">Nov 2021 – Jul 2024</div>
+          <div>
+            <h3>Software Engineer, Full Stack · Desktop</h3>
+            <ul>
+              <li>Built React and Next.js interfaces for 1M+ users, and a browser extension that made provisioning <strong>5x</strong> faster.</li>
+              <li>Built event-driven background processing on AWS (Lambda, S3, ECS).</li>
+            </ul>
+          </div>
+        </div>
+        <div class="job">
+          <div class="when">Jul 2020 – Oct 2021</div>
+          <div>
+            <h3>Support Analyst, Internal Tools · Desktop</h3>
+            <ul>
+              <li>Built a Node.js and React tool that cut protocol diagnostics from 60 seconds to <strong>under 1</strong>.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="job">
+          <div class="when">2017 – 2020</div>
+          <div>
+            <h3>Machining Technician &amp; Machine Assembler · Bekaert, OnPower</h3>
+            <ul>
+              <li>Machined parts to sub-millimeter tolerances and assembled 800 kVA industrial generators.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="cv-h">Honors &amp; awards</h3>
+      <div class="xp">
+        <div class="job"><div class="when">Oct 2026</div><div><h3>5th place, OpenAI DevDay Hackathon</h3><p class="note">Team project: Conforme, an AI tool that flags discrepancies between contracts and invoices. Demo: hackaton-openai-conforme-contratos.vercel.app</p></div></div>
+      </div>
+
+      <h3 class="cv-h">Community</h3>
+      <div class="xp">
+        <div class="job"><div class="when">Nov 2026</div><div><h3>Hack Brasil · hackathon participant</h3><p class="note">Shipped ConfirmaCNPJ in one day at the Campinas meetup; building the official project for the online phase.</p></div></div>
+        <div class="job"><div class="when">2021 – now</div><div><h3>Supabase · community contributor</h3><p class="note">PostgreSQL multi-schema support, API gateway routing and pgvector patterns, with the core team.</p></div></div>
+        <div class="job"><div class="when">2026 – now</div><div><h3>OpenAI Developer Community</h3><p class="note">Member; attended OpenAI DevDay in person.</p></div></div>
+        <div class="job"><div class="when">2025 – now</div><div><h3>Salesforce Trailblazer Community</h3></div></div>
+      </div>
+
+      <h3 class="cv-h">Certifications</h3>
+      <ul class="certs">
+        <li>Lean Six Sigma Yellow Belt and White Belt · The Council for Six Sigma Certification</li>
+        <li>Certificate in JavaScript Development</li>
+        <li>Data Analysis with Google Sheets</li>
+      </ul>
+
+      <h3 class="cv-h">Skills &amp; languages</h3>
+      <table class="spec">
+        <tr><th scope="row">AI</th><td>LLM APIs, RAG, MCP, evals, Claude Code. Learning PyTorch, fine-tuning and computer vision.</td></tr>
+        <tr><th scope="row">Backend</th><td>Python (FastAPI, Polars), Node.js, TypeScript, Java</td></tr>
+        <tr><th scope="row">Data</th><td>PostgreSQL internals, CDC, pgvector, Supabase, Redis</td></tr>
+        <tr><th scope="row">Cloud</th><td>AWS (Lambda, ECS, S3, RDS), Docker, GitHub Actions</td></tr>
+        <tr><th scope="row">Frontend</th><td>React, Next.js, React Native</td></tr>
+        <tr><th scope="row">Languages</th><td>Portuguese (native), English (full professional)</td></tr>
+      </table>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <div class="contact">
+        <p class="big">Open to AI Engineer, Forward Deployed Engineer and senior backend roles, remote.</p>
+        <p>Write to <a href="mailto:danilo.vargas.silva.br@gmail.com">danilo.vargas.silva.br@gmail.com</a> or find me on <a href="https://www.linkedin.com/in/danilovargasdasilva">LinkedIn</a> and <a href="https://github.com/DaniloVargasDaSilva">GitHub</a>.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer><div class="wrap"><span>© 2026 Danilo Vargas da Silva</span><span>Last revised Nov 2026 · hosted on GitHub Pages · <a href="cv.pdf">CV (PDF)</a></span></div></footer>
+<script src="assets/motion.js" defer></script>
+</body>
+</html>
