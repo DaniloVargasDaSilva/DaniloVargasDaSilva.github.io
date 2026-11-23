@@ -70,6 +70,8 @@
   /* ---------- ponte rolante com o avatar ---------- */
   var cc = document.getElementById("crane");
   var cctx = cc && cc.getContext("2d");
+  var craneOn = true;
+  if (cc && "IntersectionObserver" in window) new IntersectionObserver(function (es) { craneOn = es[0].isIntersecting; }).observe(cc);
   var GW = 120, GH = 90, FLOOR = 79;
   var PAL = { h: "#1f1a17", s: "#e7b993", g: "#141414", e: "#141414", m: "#a5574a", w: "#f1f1ee", l: "#3fb36a", p: "#2c3540", k: "#1a1a1a" };
   var AV = [
@@ -323,9 +325,9 @@
   function loop(now) {
     var dt = Math.min(0.05, (now - last) / 1000); last = now;
     var t = now / 1000;
+    if (visible && craneOn) { updateCrane(dt); drawCrane(t); }
     if (visible && heroOn) {
       drawDots(t);
-      updateCrane(dt); drawCrane(t);
       updateWalkers(dt); drawWalkers(t);
       if (typeTick) typeTick(dt);
     }

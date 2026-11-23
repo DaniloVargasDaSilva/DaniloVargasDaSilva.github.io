@@ -58,7 +58,7 @@ h1,h2,h3{font-family:var(--display);font-stretch:85%;margin:0;text-wrap:balance}
 .topbar nav a[aria-current="true"]{color:var(--ink)}
 .topbar nav a[aria-current="true"]::after{transform:scaleX(1)}
 .topbar nav a:hover{color:var(--blue)}
-.intro{padding:52px 0 4px;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:40px;align-items:center}
+.intro{padding:44px 0 4px;display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:48px;align-items:center}
 @media (max-width:900px){.intro{grid-template-columns:1fr;padding-top:28px;gap:24px}}
 .intro h1{font-size:clamp(2.75rem,7.6vw,5.9rem);line-height:.92;font-weight:800;font-stretch:70%;letter-spacing:-.01em}
 .intro .sub{font-family:var(--body);font-size:1.25rem;line-height:1.5;margin:18px 0 0;max-width:36ch;color:var(--ink);min-height:3em}
@@ -70,10 +70,32 @@ h1,h2,h3{font-family:var(--display);font-stretch:85%;margin:0;text-wrap:balance}
 .stats div{border-top:2px solid var(--ink);padding-top:8px}
 .stats dt{font-family:var(--display);font-stretch:70%;font-weight:800;font-size:1.9rem;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
 .stats dd{margin:4px 0 0;font-family:var(--display);font-stretch:90%;font-size:.82rem;line-height:1.25;color:var(--muted)}
+/* fotos em 2.5D */
+.hero-fig{margin:0;background:var(--sheet);border:2px solid var(--ink)}
+.d3{position:relative;overflow:hidden;background:var(--grid);aspect-ratio:3/4}
+.d3 img,.d3 canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.d3 canvas{opacity:0;transition:opacity .4s}
+.gl-on .d3 canvas{opacity:1}
+.hero-fig figcaption{display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:var(--display);font-stretch:90%;font-size:.82rem;color:var(--muted);padding:6px 6px 6px 10px;border-top:2px solid var(--ink);line-height:1.3}
+.depth-btn{flex:none;display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 9px;font:600 .78rem var(--display);font-stretch:90%;color:var(--ink);background:var(--sheet);border:1px solid var(--line);cursor:pointer}
+.depth-btn:hover{border-color:var(--ink)}
+.depth-btn[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:var(--sheet)}
+.hero-fig:not(.gl-on) .depth-btn{display:none}
+@media (max-width:900px){.hero-fig{max-width:400px}}
+.shots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:28px}
+.shot{margin:0}
+.shot.wide{grid-column:1/-1}
+.shot .d3{aspect-ratio:3/2;border:1px solid var(--line)}
+.shot.wide .d3{aspect-ratio:16/9}
+.shot figcaption{font-family:var(--display);font-stretch:90%;font-size:.84rem;color:var(--muted);padding-top:6px;line-height:1.3}
+@media (max-width:560px){.shots{grid-template-columns:1fr}}
 .crane{margin:0;background:var(--sheet);border:2px solid var(--ink);padding:0}
 .crane canvas{display:block;width:100%;height:auto;image-rendering:pixelated}
 .crane figcaption{font-family:var(--display);font-stretch:90%;font-size:.82rem;color:var(--muted);padding:6px 10px;border-top:2px solid var(--ink)}
-@media (max-width:900px){.crane{max-width:360px}}
+.plan header{display:grid;grid-template-columns:minmax(0,1fr) 260px;grid-template-rows:auto auto 1fr;gap:4px 22px;align-items:start}
+.plan header .crane{grid-column:2;grid-row:1/4;border-width:1px}
+.plan header .crane figcaption{border-top-width:1px}
+@media (max-width:700px){.plan header{grid-template-columns:1fr}.plan header .crane{grid-column:1;grid-row:auto;max-width:360px;margin-top:12px}}
 
 /* cota da trajetória */
 .dim{padding:36px 0 34px}
@@ -252,7 +274,7 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
 #agentsBtn[aria-pressed="false"] span{text-decoration:line-through;text-decoration-thickness:1px}
 @media (max-width:640px){.topbar{gap:10px;padding:8px 0}.topbar nav{flex:1;min-width:0;flex-wrap:nowrap;gap:16px;font-size:.93rem;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent);padding-right:18px}.topbar nav::-webkit-scrollbar{display:none}.controls{gap:6px}#agentsBtn span{display:none}.ctl{padding:0 9px}.lang button{padding:0 7px}}
 /* enxame de agentes */
-.sw-pre .topbar nav,.sw-pre .topbar .controls,.sw-pre .intro-text h1,.sw-pre .intro .sub,.sw-pre .stats>div,.sw-pre .crane,.sw-pre .dim{opacity:0}
+.sw-pre .topbar nav,.sw-pre .topbar .controls,.sw-pre .intro-text h1,.sw-pre .intro .sub,.sw-pre .stats>div,.sw-pre .hero-fig,.sw-pre .dim{opacity:0}
 .sw-ready main>section:not(.sw-done)>*,.sw-ready .body>.side:not(.sw-done)>*{opacity:0}
 .sw-mono{--blue:var(--muted);--blue-soft:var(--grid)}
 .swarm-canvas{position:fixed;inset:0;z-index:60;pointer-events:none}
@@ -261,7 +283,7 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
 .rebuild{display:block;margin:6px 0 18px auto;font:600 .82rem var(--display);font-stretch:90%;color:var(--muted);background:none;border:0;border-bottom:1px dashed var(--line);padding:2px 0;cursor:pointer}
 .rebuild:hover{color:var(--blue);border-bottom-color:var(--blue)}
 .rebuild[hidden]{display:none}
-@media print{.sw-ready main>section>*,.sw-ready .side>*,.sw-pre .intro-text h1{opacity:1!important}.controls,.rebuild,.swarm-skip,.swarm-canvas,.top,.status,.path{display:none!important}details.more summary{display:none}}
+@media print{.sw-ready main>section>*,.sw-ready .side>*,.sw-pre .intro-text h1{opacity:1!important}.controls,.rebuild,.swarm-skip,.swarm-canvas,.top,.status,.path,.shots,.crane{display:none!important}details.more summary{display:none}}
 </style>
 </head>
 <body>
@@ -303,9 +325,12 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
           <div><dt><span class="count" data-to="5" data-suffix="th">5th</span></dt><dd>OpenAI DevDay Hackathon</dd></div>
         </dl>
       </div>
-      <figure class="crane">
-        <canvas id="crane" width="360" height="270" aria-label="A pixel-art version of Danilo operating a workshop crane, moving project blocks P0 to P8 from planned to shipped"></canvas>
-        <figcaption>Shipping P0–P8, one block at a time.</figcaption>
+      <figure class="hero-fig depth3d" data-depth="assets/photos/hackathon-sp-depth.png" data-focus="0.82">
+        <div class="d3">
+          <img src="assets/photos/hackathon-sp.jpg" width="900" height="1200" alt="Danilo with arms crossed in front of the OpenAI DevDay Community Hackathon banner in São Paulo" fetchpriority="high">
+          <canvas aria-hidden="true"></canvas>
+        </div>
+        <figcaption><span>OpenAI DevDay Community Hackathon, São Paulo</span><button type="button" class="depth-btn" aria-pressed="false" title="Show the depth map the 3D effect is built from"><i class="fa-solid fa-layer-group" aria-hidden="true"></i><span>Depth</span></button></figcaption>
       </figure>
     </div>
 
@@ -382,6 +407,20 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
         <li><time datetime="2021-09">Sep 2021</time><span>Started contributing to the Supabase community.</span></li>
         <li><time datetime="2020-07">Jul 2020</time><span>Moved from industrial machining into software, building internal tools for technical support.</span></li>
       </ul>
+      <div class="shots">
+        <figure class="shot wide depth3d" data-depth="assets/photos/devday-exchange-depth.png" data-focus="0.75">
+          <div class="d3"><img src="assets/photos/devday-exchange.jpg" width="1200" height="675" loading="lazy" alt="Danilo giving a thumbs up on the OpenAI DevDay Exchange stage in São Paulo"><canvas aria-hidden="true"></canvas></div>
+          <figcaption>OpenAI DevDay Exchange, São Paulo, Oct 2026</figcaption>
+        </figure>
+        <figure class="shot depth3d" data-depth="assets/photos/hack-brasil-depth.png" data-focus="0.75">
+          <div class="d3"><img src="assets/photos/hack-brasil.jpg" width="1200" height="675" loading="lazy" alt="Danilo next to the Hack Brasil banner at the Campinas meetup"><canvas aria-hidden="true"></canvas></div>
+          <figcaption>Hack Brasil meetup, Campinas, Nov 2026</figcaption>
+        </figure>
+        <figure class="shot depth3d" data-depth="assets/photos/hackathon-group-depth.png" data-focus="0.6">
+          <div class="d3"><img src="assets/photos/hackathon-group.jpg" width="800" height="533" loading="lazy" alt="Group photo of the OpenAI DevDay Community Hackathon participants in São Paulo"><canvas aria-hidden="true"></canvas></div>
+          <figcaption>OpenAI DevDay Community Hackathon, Oct 2026</figcaption>
+        </figure>
+      </div>
     </section>
 
     <section id="projects">
@@ -418,6 +457,10 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
           <div class="meta">Nov 2026 – Nov 2027 · building in public</div>
           <h3>A 12-month AI roadmap</h3>
           <p>Nine projects, each published with code, results and a write-up. Links appear here as each one ships.</p>
+          <figure class="crane">
+            <canvas id="crane" width="360" height="270" aria-label="A pixel-art version of Danilo operating a workshop crane, moving project blocks P0 to P8 from planned to shipped"></canvas>
+            <figcaption>Shipping P0–P8, one block at a time.</figcaption>
+          </figure>
         </header>
         <ol>
           <!-- Para atualizar: mude a largura da barra (style="width:40%") e o texto de status. Quando publicar, troque <code> por um link. -->
@@ -578,5 +621,6 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
 <script src="assets/site.js" defer></script>
 <script src="assets/motion.js" defer></script>
 <script src="assets/swarm.js" defer></script>
+<script src="assets/depth3d.js" defer></script>
 </body>
 </html>

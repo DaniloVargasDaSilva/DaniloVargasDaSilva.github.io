@@ -18,3 +18,11 @@ Object.assign(window.SITE_PT,{
 "© 2026 Danilo Vargas da Silva · Back to top":"© 2026 Danilo Vargas da Silva · <a href=\"#top\">Voltar ao topo</a>"
 });
 window.SITE_I18N_SEL+=", .act span, .status span, .more summary span, .cbtn span, .path li span";
+Object.assign(window.SITE_PT,{
+"OpenAI DevDay Community Hackathon, São Paulo":"Hackathon da comunidade OpenAI DevDay, São Paulo",
+"Depth":"Profundidade",
+"OpenAI DevDay Exchange, São Paulo, Oct 2026":"OpenAI DevDay Exchange, São Paulo, out 2026",
+"Hack Brasil meetup, Campinas, Nov 2026":"Meetup do Hack Brasil, Campinas, nov 2026",
+"OpenAI DevDay Community Hackathon, Oct 2026":"Hackathon da comunidade OpenAI DevDay, out 2026"
+});
+window.SITE_I18N_SEL+=", .hero-fig figcaption > span, .depth-btn span, .shot figcaption";
