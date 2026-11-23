@@ -36,3 +36,7 @@ Object.assign(window.SITE_PT,{
 "OpenAI DevDay Community Hackathon, São Paulo, Oct 2026":"Hackathon da comunidade OpenAI DevDay, São Paulo, out 2026"
 });
 window.SITE_I18N_SEL+=", .slide figcaption";
+Object.assign(window.SITE_PT,{
+"Arriving at OpenAI DevDay Exchange, São Paulo, Nov 2025":"Chegando ao OpenAI DevDay Exchange, São Paulo, nov 2025",
+"On the DevDay Exchange stage, São Paulo, Nov 2025":"No palco do DevDay Exchange, São Paulo, nov 2025"
+});
