@@ -20,18 +20,19 @@
 @font-face{font-family:"Archivo";font-style:normal;font-display:swap;font-weight:100 900;font-stretch:62% 125%;src:url(assets/fonts/archivo-latin-ext.woff2) format("woff2-variations");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
 @font-face{font-family:"Literata";font-style:normal;font-display:swap;font-weight:200 900;src:url(assets/fonts/literata-latin.woff2) format("woff2-variations");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 @font-face{font-family:"Literata";font-style:normal;font-display:swap;font-weight:200 900;src:url(assets/fonts/literata-latin-ext.woff2) format("woff2-variations");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+html{scroll-padding-top:76px}
 :root{
   /* Prancha de desenho técnico: papel branco frio, traço grafite, azul de tinta de traçagem como única cor.
      Layout: carimbo no topo, cota da trajetória, depois uma coluna de leitura com índice lateral. */
-  --paper:#F7F8F7; --sheet:#FFFFFF; --ink:#14181B; --muted:#5D676D; --line:#D6DCDB; --grid:#E6EBEA; --blue:#1F3FBF; --blue-soft:#E7EBFA;
+  --c-bg:#14181B; --c-ink:#F7F8F7; --on-blue:#FFFFFF; --paper:#F7F8F7; --sheet:#FFFFFF; --ink:#14181B; --muted:#5D676D; --line:#D6DCDB; --grid:#E6EBEA; --blue:#1F3FBF; --blue-soft:#E7EBFA;
   --display:"Archivo", "Arial Narrow", system-ui, sans-serif;
   --body:"Literata", Georgia, serif;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){ --paper:#101417; --sheet:#161C20; --ink:#E5EAEC; --muted:#98A3A9; --line:#2B353B; --grid:#1C2429; --blue:#8EA4FF; --blue-soft:#1E2747; color-scheme:dark; }
+  :root:not([data-theme="light"]){ --paper:#101417; --sheet:#161C20; --ink:#E5EAEC; --muted:#98A3A9; --line:#2B353B; --grid:#1C2429; --blue:#8EA4FF; --blue-soft:#1E2747; --c-bg:#1E2747; --c-ink:#E5EAEC; --on-blue:#0E1530; color-scheme:dark; }
 }
-:root[data-theme="dark"]{ --paper:#101417; --sheet:#161C20; --ink:#E5EAEC; --muted:#98A3A9; --line:#2B353B; --grid:#1C2429; --blue:#8EA4FF; --blue-soft:#1E2747; color-scheme:dark; }
+:root[data-theme="dark"]{ --paper:#101417; --sheet:#161C20; --ink:#E5EAEC; --muted:#98A3A9; --line:#2B353B; --grid:#1C2429; --blue:#8EA4FF; --blue-soft:#1E2747; --c-bg:#1E2747; --c-ink:#E5EAEC; --on-blue:#0E1530; color-scheme:dark; }
 *{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:1.0625rem;line-height:1.72}
@@ -42,20 +43,24 @@ h1,h2,h3{font-family:var(--display);font-stretch:85%;margin:0;text-wrap:balance}
 .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
 
 /* ---------- topo: pontos interativos + ponte rolante ---------- */
-.progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:20;pointer-events:none}
+.progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:31;pointer-events:none}
 .progress i{display:block;height:100%;width:0;background:var(--blue)}
 .hero{position:relative;background:var(--paper);border-bottom:1px solid var(--line);overflow:hidden}
 #dots{position:absolute;inset:0;width:100%;height:100%;display:block}
 .hero-in{position:relative;z-index:1}
-.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-family:var(--display);font-stretch:90%}
+.top{position:sticky;top:0;z-index:30;background:var(--paper);background:color-mix(in srgb,var(--paper) 86%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .25s}
+.top.scrolled{border-bottom-color:var(--line)}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 0;font-family:var(--display);font-stretch:90%}
 .topbar .mark{font-weight:700;color:var(--ink);text-decoration:none;letter-spacing:.01em}
 .topbar nav{display:flex;gap:20px;flex-wrap:wrap}
-.topbar nav a{color:var(--muted);text-decoration:none;font-weight:500}
+.topbar nav a{color:var(--muted);text-decoration:none;font-weight:500;position:relative;padding:6px 0;white-space:nowrap}
+.topbar nav a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--blue);transform:scaleX(0);transform-origin:left;transition:transform .25s}
+.topbar nav a[aria-current="true"]{color:var(--ink)}
+.topbar nav a[aria-current="true"]::after{transform:scaleX(1)}
 .topbar nav a:hover{color:var(--blue)}
-@media (max-width:560px){.topbar{flex-direction:column;align-items:flex-start;gap:8px}.topbar .mark{white-space:nowrap}.topbar nav{gap:14px;font-size:.92rem}}
-.intro{padding:44px 0 4px;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:40px;align-items:center}
+.intro{padding:52px 0 4px;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:40px;align-items:center}
 @media (max-width:900px){.intro{grid-template-columns:1fr;padding-top:28px;gap:24px}}
-.intro h1{font-size:clamp(2.6rem,7vw,5rem);line-height:.92;font-weight:800;font-stretch:70%;letter-spacing:-.01em}
+.intro h1{font-size:clamp(2.75rem,7.6vw,5.9rem);line-height:.92;font-weight:800;font-stretch:70%;letter-spacing:-.01em}
 .intro .sub{font-family:var(--body);font-size:1.25rem;line-height:1.5;margin:18px 0 0;max-width:36ch;color:var(--ink);min-height:3em}
 .typed{color:var(--blue);font-weight:600}
 .caret{display:inline-block;width:2px;height:1.05em;background:var(--blue);margin-left:2px;vertical-align:-.15em;animation:blink 1s steps(1) infinite}
@@ -89,7 +94,7 @@ h1,h2,h3{font-family:var(--display);font-stretch:85%;margin:0;text-wrap:balance}
 .body{display:grid;grid-template-columns:220px minmax(0,1fr);gap:52px;padding:48px 20px 72px;max-width:1040px;margin:0 auto}
 @media (max-width:860px){.body{grid-template-columns:1fr;gap:32px;padding-top:32px}}
 .side{font-family:var(--display);font-stretch:92%}
-@media (min-width:861px){.side{position:sticky;top:24px;align-self:start}}
+@media (min-width:861px){.side{position:sticky;top:84px;align-self:start}}
 .side img{width:150px;height:150px;object-fit:cover;border-radius:50%;border:2px solid var(--ink);display:block;margin-bottom:14px}
 .side-name{font-size:1.3rem;font-weight:700;font-stretch:80%;line-height:1.15}
 .side-role{margin:4px 0 14px;color:var(--muted);font-size:.95rem;line-height:1.35}
@@ -100,10 +105,25 @@ h1,h2,h3{font-family:var(--display);font-stretch:85%;margin:0;text-wrap:balance}
 .side-links a:hover{color:var(--blue)}
 .side-links a:hover i{color:var(--blue)}
 @media (max-width:860px){.side{display:grid;grid-template-columns:96px 1fr;gap:4px 16px;align-items:center}.side img{width:96px;height:96px;margin:0;grid-row:1/3}.side-links{grid-column:1/-1;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:12px}}
-section{margin-bottom:56px;scroll-margin-top:20px}
+section{margin-bottom:64px}
 section > h2{font-size:1.7rem;font-weight:700;font-stretch:75%;margin-bottom:16px;display:flex;align-items:baseline;gap:12px}
 section > h2::after{content:"";flex:1;border-bottom:1px solid var(--line);transform:translateY(-6px)}
 p{margin:0 0 14px;max-width:66ch}
+
+.status{display:inline-flex;align-items:center;gap:8px;margin:0 0 16px;font-size:.88rem;font-weight:600;color:var(--blue);text-decoration:none;border:1px solid var(--blue);padding:4px 10px 4px 9px;line-height:1.3}
+.status::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--blue);flex:none;box-shadow:0 0 0 3px var(--blue-soft)}
+.status:hover{background:var(--blue-soft)}
+@media (max-width:860px){.status{grid-column:2;justify-self:start;margin:6px 0 0}}
+
+/* trajetória em lista no celular */
+.path{display:none;list-style:none;margin:8px 0 28px;padding:0 0 0 18px;border-left:1.5px solid var(--ink);font-family:var(--display);font-stretch:90%}
+.path li{position:relative;padding:6px 0 10px;line-height:1.3}
+.path li::before{content:"";position:absolute;left:-18px;top:15px;width:12px;border-top:1.5px solid var(--ink)}
+.path b{display:block;font-size:1.05rem;font-weight:700;font-variant-numeric:tabular-nums}
+.path span{color:var(--muted);font-size:.92rem}
+.path li:last-child b,.path li:last-child span{color:var(--blue)}
+.path li:last-child::before{border-color:var(--blue);width:16px;border-top-width:2px}
+@media (max-width:640px){.dim{display:none}.path{display:block}}
 
 /* news como régua */
 .news{list-style:none;margin:0;padding:0;position:relative}
@@ -123,6 +143,12 @@ p{margin:0 0 14px;max-width:66ch}
 .feature p{grid-column:1/-1;margin:0}
 .place{font-family:var(--display);font-stretch:70%;font-weight:800;font-size:2.6rem;line-height:.9;color:var(--blue);text-align:right;grid-row:1/3;grid-column:2}
 .place small{display:block;font-size:.8rem;font-weight:600;font-stretch:90%;color:var(--muted)}
+.acts{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.act{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px;font:600 .92rem var(--display);font-stretch:90%;text-decoration:none;border:1px solid var(--ink);color:var(--ink);background:transparent;transition:background .15s,color .15s,border-color .15s}
+.act:hover{background:var(--ink);color:var(--sheet)}
+.act.primary{background:var(--blue);border-color:var(--blue);color:var(--on-blue)}
+.act.primary:hover{background:var(--ink);border-color:var(--ink);color:var(--sheet)}
+.act i{font-size:.85em}
 .meta{font-family:var(--display);font-stretch:90%;font-size:.88rem;color:var(--muted)}
 .plan{background:var(--sheet);border:1px solid var(--line);margin-bottom:16px}
 .plan header{padding:18px 22px 10px}
@@ -152,17 +178,34 @@ p{margin:0 0 14px;max-width:66ch}
 .job li strong{font-family:var(--display);font-stretch:85%;font-weight:700;color:var(--blue);font-size:1.05em}
 @media (max-width:560px){.job{grid-template-columns:1fr;gap:2px}}
 
+details.more{border-top:1px solid var(--line);margin-top:4px}
+details.more summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 0;font:600 .98rem var(--display);font-stretch:88%;color:var(--blue)}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary i{font-size:.75rem;transition:transform .2s}
+details.more[open] summary i{transform:rotate(90deg)}
+details.more summary:hover span{text-decoration:underline;text-underline-offset:3px}
+details.more .job:first-child{border-top:1px solid var(--line);padding-top:16px}
+
 /* habilidades como tabela de especificação */
 .spec{width:100%;border-collapse:collapse;font-size:.98rem}
 .spec th{font-family:var(--display);font-stretch:85%;font-weight:600;color:var(--muted);text-align:left;vertical-align:top;padding:9px 18px 9px 0;width:130px;border-top:1px solid var(--line)}
 .spec td{padding:9px 0;border-top:1px solid var(--line)}
 .spec tr:first-child th,.spec tr:first-child td{border-top:0}
 
-.contact{background:var(--ink);color:var(--paper);padding:26px 28px}
-.contact p{color:var(--paper);margin:0 0 14px}
-.contact a{color:var(--paper);text-decoration-color:var(--blue);text-decoration-thickness:2px}
-.contact .big{font-family:var(--display);font-stretch:75%;font-weight:700;font-size:1.6rem;line-height:1.2;margin-bottom:10px}
-@media (prefers-color-scheme: dark){.contact{background:var(--blue-soft);color:var(--ink)}.contact p,.contact a{color:var(--ink)}}
+.contact{background:var(--c-bg);color:var(--c-ink);padding:34px 32px 30px}
+.contact p{color:var(--c-ink);margin:0}
+.contact .big{font-family:var(--display);font-stretch:72%;font-weight:700;font-size:clamp(1.7rem,3.4vw,2.3rem);line-height:1.08;max-width:30ch}
+.c-acts{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0 18px}
+.cbtn{display:inline-flex;align-items:center;gap:9px;height:44px;padding:0 16px;font:600 .95rem var(--display);font-stretch:90%;text-decoration:none;color:var(--c-ink);background:transparent;border:1px solid color-mix(in srgb,var(--c-ink) 35%,transparent);cursor:pointer;transition:border-color .15s,background .15s}
+.cbtn:hover{border-color:var(--c-ink)}
+.cbtn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+:root[data-theme="dark"] .cbtn.primary{color:var(--on-blue)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cbtn.primary{color:var(--on-blue)}}
+.cbtn.primary:hover{filter:brightness(1.12)}
+.cbtn.done{border-color:var(--c-ink)}
+.contact .addr{font-family:var(--display);font-stretch:90%;font-size:.9rem;opacity:.72;font-variant-numeric:tabular-nums}
+.contact :focus-visible{outline-color:var(--c-ink)}
+@media (max-width:560px){.contact{padding:26px 20px}.c-acts .cbtn{flex:1 1 calc(50% - 5px);justify-content:center;white-space:nowrap;padding:0 10px}}
 
 /* seção CV */
 .cv-head{display:flex;justify-content:flex-start;margin:-4px 0 8px}
@@ -194,6 +237,8 @@ p{margin:0 0 14px;max-width:66ch}
 @media (prefers-reduced-motion: reduce){.caret{animation:none}.bar i{transition:none}*{scroll-behavior:auto}}
 html{scroll-behavior:smooth}
 footer{border-top:1px solid var(--line);font-family:var(--display);font-stretch:90%;font-size:.88rem;color:var(--muted)}
+footer a{color:var(--muted)}
+footer a:hover{color:var(--blue)}
 footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 /* controles do topo */
 .controls{display:flex;gap:8px;align-items:center;flex:none}
@@ -205,7 +250,7 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
 .lang button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
 #agentsBtn[aria-pressed="false"]{color:var(--muted)}
 #agentsBtn[aria-pressed="false"] span{text-decoration:line-through;text-decoration-thickness:1px}
-@media (max-width:560px){.topbar{flex-wrap:wrap}.topbar nav{gap:14px;order:2;width:100%}.controls{order:1;margin-left:auto}#agentsBtn span{display:none}}
+@media (max-width:640px){.topbar{gap:10px;padding:8px 0}.topbar nav{flex:1;min-width:0;flex-wrap:nowrap;gap:16px;font-size:.93rem;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent);padding-right:18px}.topbar nav::-webkit-scrollbar{display:none}.controls{gap:6px}#agentsBtn span{display:none}.ctl{padding:0 9px}.lang button{padding:0 7px}}
 /* enxame de agentes */
 .sw-pre .topbar nav,.sw-pre .topbar .controls,.sw-pre .intro-text h1,.sw-pre .intro .sub,.sw-pre .stats>div,.sw-pre .crane,.sw-pre .dim{opacity:0}
 .sw-ready main>section:not(.sw-done)>*,.sw-ready .body>.side:not(.sw-done)>*{opacity:0}
@@ -216,15 +261,14 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
 .rebuild{display:block;margin:6px 0 18px auto;font:600 .82rem var(--display);font-stretch:90%;color:var(--muted);background:none;border:0;border-bottom:1px dashed var(--line);padding:2px 0;cursor:pointer}
 .rebuild:hover{color:var(--blue);border-bottom-color:var(--blue)}
 .rebuild[hidden]{display:none}
-@media print{.sw-ready main>section>*,.sw-ready .side>*,.sw-pre .intro-text h1{opacity:1!important}.controls,.rebuild,.swarm-skip,.swarm-canvas{display:none!important}}
+@media print{.sw-ready main>section>*,.sw-ready .side>*,.sw-pre .intro-text h1{opacity:1!important}.controls,.rebuild,.swarm-skip,.swarm-canvas,.top,.status,.path{display:none!important}details.more summary{display:none}}
 </style>
 </head>
 <body>
 
 <div class="progress" aria-hidden="true"><i id="readbar"></i></div>
-<header class="hero">
-  <canvas id="dots" aria-hidden="true"></canvas>
-  <div class="wrap hero-in">
+<div class="top" id="top">
+  <div class="wrap">
     <div class="topbar">
       <nav aria-label="Sections">
         <a href="#about">About</a>
@@ -242,6 +286,11 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
         <button type="button" class="ctl" id="agentsBtn" aria-pressed="true"><i class="fa-solid fa-robot" aria-hidden="true"></i><span>Agents</span></button>
       </div>
     </div>
+  </div>
+</div>
+<header class="hero">
+  <canvas id="dots" aria-hidden="true"></canvas>
+  <div class="wrap hero-in">
 
     <div class="intro">
       <div class="intro-text">
@@ -284,6 +333,12 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
       <canvas id="walkers" aria-label="Small robots walking along the timeline. Click one to make it jump."></canvas>
       </div>
     </div>
+    <ol class="path" aria-label="Career path">
+      <li><b>2017</b><span>Precision machining, ±0.01 mm</span></li>
+      <li><b>2020</b><span>Software: support tools, full stack, data platforms</span></li>
+      <li><b>2025</b><span>Tech lead across three squads</span></li>
+      <li><b>2026</b><span>AI engineering, building in public</span></li>
+    </ol>
     <button class="rebuild" id="rebuild" type="button" hidden>Watch the agents build this page</button>
   </div>
 </header>
@@ -293,6 +348,7 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
     <img src="assets/profile.jpg" alt="Danilo Vargas da Silva">
     <h2 class="side-name">Danilo Vargas da Silva</h2>
     <p class="side-role">Senior Software Engineer &amp; Tech Lead</p>
+    <a class="status" href="#contact"><span>Open to remote AI roles</span></a>
     <ul class="side-links">
       <li><i class="fa-solid fa-location-dot fa-fw" aria-hidden="true"></i>Sumaré SP, Brazil</li>
       <li><i class="fa-solid fa-building fa-fw" aria-hidden="true"></i>Desktop</li>
@@ -333,20 +389,28 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
 
       <article class="feature">
         <div>
-          <div class="meta">Nov 2026 · Hack Brasil meetup, Campinas · solo · <a href="https://github.com/DaniloVargasDaSilva/confirmacnpj-">code</a> · MIT</div>
+          <div class="meta">Nov 2026 · Hack Brasil meetup, Campinas · solo · MIT</div>
           <h3><a href="https://confirmacnpj.vercel.app/">ConfirmaCNPJ</a></h3>
         </div>
         <div class="place">1<small>day, idea to deploy</small></div>
         <p>Paste a website or a CNPJ and find out whether the Brazilian company behind it is real, active and owns that site, before you pay. Firecrawl scrapes the site for the CNPJ and runs three searches in parallel; Registro.br and Federal Revenue data fill in the rest. The result is a verification slip with a trust score and the reason behind every warning. Next.js on Vercel, no database, in Portuguese and English.</p>
+        <div class="acts">
+          <a class="act primary" href="https://confirmacnpj.vercel.app/"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i><span>Try the app</span></a>
+          <a class="act" href="https://github.com/DaniloVargasDaSilva/confirmacnpj-"><i class="fa-brands fa-github" aria-hidden="true"></i><span>Source code</span></a>
+        </div>
       </article>
 
       <article class="feature">
         <div>
-          <div class="meta">Oct 2026 · OpenAI DevDay Hackathon · team project · <a href="https://github.com/DaniloVargasDaSilva/hackaton_openai_conforme_contratos">code</a></div>
+          <div class="meta">Oct 2026 · OpenAI DevDay Hackathon · team project</div>
           <h3><a href="https://hackaton-openai-conforme-contratos.vercel.app/">Conforme: contract &amp; invoice discrepancy analysis</a></h3>
         </div>
         <div class="place">5th<small>place</small></div>
         <p>An AI tool that reads contracts and invoices and flags where amounts and terms don't match, in seconds.</p>
+        <div class="acts">
+          <a class="act primary" href="https://hackaton-openai-conforme-contratos.vercel.app/"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i><span>Try the app</span></a>
+          <a class="act" href="https://github.com/DaniloVargasDaSilva/hackaton_openai_conforme_contratos"><i class="fa-brands fa-github" aria-hidden="true"></i><span>Source code</span></a>
+        </div>
       </article>
 
       <article class="plan">
@@ -427,6 +491,10 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
             </ul>
           </div>
         </div>
+      </div>
+      <details class="more">
+        <summary><i class="fa-solid fa-chevron-right" aria-hidden="true"></i><span>Earlier roles, 2017–2024</span></summary>
+        <div class="xp">
         <div class="job">
           <div class="when">Nov 2021 – Jul 2024</div>
           <div>
@@ -455,7 +523,8 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
             </ul>
           </div>
         </div>
-      </div>
+        </div>
+      </details>
 
       <h3 class="cv-h">Honors &amp; awards</h3>
       <div class="xp">
@@ -492,13 +561,19 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
       <h2>Contact</h2>
       <div class="contact">
         <p class="big">Open to AI Engineer, Forward Deployed Engineer and senior backend roles, remote.</p>
-        <p>Write to <a href="mailto:danilo.vargas.silva.br@gmail.com">danilo.vargas.silva.br@gmail.com</a> or find me on <a href="https://www.linkedin.com/in/danilovargasdasilva">LinkedIn</a> and <a href="https://github.com/DaniloVargasDaSilva">GitHub</a>.</p>
+        <div class="c-acts">
+          <a class="cbtn primary" href="mailto:danilo.vargas.silva.br@gmail.com"><i class="fa-solid fa-envelope" aria-hidden="true"></i><span>Send an email</span></a>
+          <button type="button" class="cbtn" id="copyMail" data-mail="danilo.vargas.silva.br@gmail.com"><i class="fa-solid fa-copy" aria-hidden="true"></i><span>Copy address</span></button>
+          <a class="cbtn" href="https://www.linkedin.com/in/danilovargasdasilva"><i class="fa-brands fa-linkedin" aria-hidden="true"></i><span>LinkedIn</span></a>
+          <a class="cbtn" href="https://github.com/DaniloVargasDaSilva"><i class="fa-brands fa-github" aria-hidden="true"></i><span>GitHub</span></a>
+        </div>
+        <p class="addr">danilo.vargas.silva.br@gmail.com</p>
       </div>
     </section>
   </main>
 </div>
 
-<footer><div class="wrap"><span>© 2026 Danilo Vargas da Silva</span><span>Last revised Nov 2026 · hosted on GitHub Pages · <a href="cv.pdf">CV (PDF)</a></span></div></footer>
+<footer><div class="wrap"><span>© 2026 Danilo Vargas da Silva · <a href="#top">Back to top</a></span><span>Last revised Nov 2026 · hosted on GitHub Pages · <a href="cv.pdf">CV (PDF)</a></span></div></footer>
 <script src="assets/i18n-data.js" defer></script>
 <script src="assets/site.js" defer></script>
 <script src="assets/motion.js" defer></script>

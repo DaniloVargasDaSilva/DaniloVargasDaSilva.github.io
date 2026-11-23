@@ -92,3 +92,42 @@
   applyLang(store.get("lang") === "pt" ? "pt" : "en", true);
   window.SITE = { lang: lang, agentsOn: agentsOn };
 })();
+
+/* Cabeçalho fixo com a seção atual destacada, copiar e-mail e impressão com tudo aberto. */
+(function () {
+  "use strict";
+  var top = document.getElementById("top");
+  var links = Array.prototype.slice.call(document.querySelectorAll(".topbar nav a[href^='#']"));
+  function onScroll() { if (top) top.classList.toggle("scrolled", window.scrollY > 8); }
+  window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
+
+  var secs = links.map(function (a) { return document.querySelector(a.getAttribute("href")); }).filter(Boolean);
+  function spy() {
+    var line = window.innerHeight * 0.35, cur = null;
+    secs.forEach(function (s) { if (s.getBoundingClientRect().top <= line) cur = s; });
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) cur = secs[secs.length - 1];
+    links.forEach(function (a) {
+      if (cur && a.getAttribute("href") === "#" + cur.id) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current");
+    });
+  }
+  window.addEventListener("scroll", spy, { passive: true }); window.addEventListener("resize", spy); spy();
+
+  var copy = document.getElementById("copyMail");
+  if (copy) copy.addEventListener("click", function () {
+    var mail = copy.dataset.mail, pt = document.documentElement.lang === "pt-BR";
+    var label = copy.querySelector("span"), icon = copy.querySelector("i"), before = label.innerHTML;
+    function done(ok) {
+      label.textContent = ok ? (pt ? "Copiado" : "Copied") : mail;
+      icon.className = "fa-solid " + (ok ? "fa-check" : "fa-copy"); copy.classList.add("done");
+      setTimeout(function () { label.innerHTML = before; icon.className = "fa-solid fa-copy"; copy.classList.remove("done"); }, 2000);
+    }
+    if (navigator.clipboard) navigator.clipboard.writeText(mail).then(function () { done(true); }, function () { done(false); });
+    else done(false);
+  });
+
+  var opened = [];
+  window.addEventListener("beforeprint", function () {
+    document.querySelectorAll("details:not([open])").forEach(function (d) { d.open = true; opened.push(d); });
+  });
+  window.addEventListener("afterprint", function () { opened.forEach(function (d) { d.open = false; }); opened = []; });
+})();
