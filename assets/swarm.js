@@ -108,7 +108,7 @@
     if (heroJob) return;
     var hero = $(".hero"); if (!hero) return;
     root.classList.add("sw-pre", "sw-mono");
-    var h1 = $(".intro-text h1"), sub = $(".intro .sub"), crane = $(".hero-fig"), dim = $(".dim");
+    var h1 = $(".intro-text h1"), sub = $(".intro .sub"), crane = $(".hero .crane"), dim = $(".dim");
     var h1html = h1 ? h1.innerHTML : "";
     if (h1) { h1.setAttribute("aria-label", h1.textContent.replace(/\s+/g, " ").trim()); h1.innerHTML = "&#8203;"; show(h1, 1); }
     hero.setAttribute("aria-busy", "true");
