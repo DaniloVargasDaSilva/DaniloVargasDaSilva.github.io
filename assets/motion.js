@@ -13,6 +13,8 @@
     var mq = window.matchMedia("(prefers-color-scheme: dark)");
     if (mq.addEventListener) mq.addEventListener("change", function () { readColors(); drawOnceAll(); });
   }
+  var isPT = function () { return document.documentElement.lang === "pt-BR"; };
+  window.addEventListener("themechange", function () { readColors(); if (reduce) drawOnceAll(); });
   var visible = true;
   document.addEventListener("visibilitychange", function () { visible = !document.hidden; });
 
@@ -124,7 +126,7 @@
     px(colors.ink, 0, FLOOR, GW, 1);
     for (var f = 2; f < GW; f += 6) px(colors.line, f, FLOOR + 3, 3, 1);
     cctx.fillStyle = colors.muted; cctx.font = "500 4px Archivo, Arial, sans-serif"; cctx.textAlign = "center"; cctx.textBaseline = "alphabetic";
-    cctx.fillText("planned", 31, FLOOR + 9); cctx.fillText("shipped", 91, FLOOR + 9);
+    cctx.fillText(isPT() ? "a fazer" : "planned", 31, FLOOR + 9); cctx.fillText(isPT() ? "entregue" : "shipped", 91, FLOOR + 9);
     // pórtico
     px(colors.ink, 4, 8, 2, FLOOR - 8); px(colors.ink, 114, 8, 2, FLOOR - 8);
     px(colors.ink, 3, 7, 114, 3);
@@ -198,7 +200,8 @@
     "..o.o.."
   ];
   var ROBOT2 = ROBOT.slice(0, 8).concat(["..oo...", "...o..."]);
-  var SAY = ["measuring twice…", "loss 2.31 → 1.87", "shipping P0", "fitting LoRA…", "±0.01 mm", "training… 42%", "hello, recruiter!", "pip install patience", "attention is all we need", "backprop by hand"];
+  var SAY_EN = ["measuring twice…", "loss 2.31 → 1.87", "shipping P0", "fitting LoRA…", "±0.01 mm", "training… 42%", "hello, recruiter!", "pip install patience", "attention is all we need", "backprop by hand"];
+  var SAY_PT = ["medindo duas vezes…", "loss 2,31 → 1,87", "entregando o P0", "ajustando LoRA…", "±0,01 mm", "treinando… 42%", "oi, recrutador!", "pip install paciência", "atenção é tudo", "backprop na mão"];
   var bots = [
     { x: 60, dir: 1, v: 26, y: 0, vy: 0, say: "", sayT: 0, wait: 0, tint: "ink" },
     { x: 420, dir: -1, v: 18, y: 0, vy: 0, say: "", sayT: 0, wait: 0, tint: "blue" },
@@ -248,7 +251,7 @@
     wctx.clearRect(0, 0, WW, WH);
     for (var i = 0; i < bots.length; i++) drawRobot(bots[i], Math.floor(t * 6 + i) % 2 === 0 && bots[i].wait <= 0 && !reduce);
   }
-  function talk(b) { b.say = SAY[Math.floor(Math.random() * SAY.length)]; b.sayT = 2.6; }
+  function talk(b) { var SAY = isPT() ? SAY_PT : SAY_EN; b.say = SAY[Math.floor(Math.random() * SAY.length)]; b.sayT = 2.6; }
   function updateWalkers(dt) {
     sayClock -= dt;
     if (sayClock <= 0) { talk(bots[Math.floor(Math.random() * bots.length)]); sayClock = 5 + Math.random() * 4; }
@@ -274,7 +277,10 @@
 
   /* ---------- texto digitando ---------- */
   var typed = document.getElementById("typed");
-  var WORDS = ["AI agents", "MCP servers", "neural nets from scratch", "a GPT in Portuguese", "fine-tuned models", "computer vision"];
+  var WORDS_EN = ["AI agents", "MCP servers", "neural nets from scratch", "a GPT in Portuguese", "fine-tuned models", "computer vision", "a production RAG"];
+  var WORDS_PT = ["agentes de IA", "MCP servers", "redes neurais do zero", "um GPT em português", "modelos com fine-tuning", "visão computacional", "um RAG em produção"];
+  var WORDS = isPT() ? WORDS_PT : WORDS_EN;
+  window.addEventListener("langchange", function () { WORDS = isPT() ? WORDS_PT : WORDS_EN; if (typed) typed.textContent = WORDS[0]; if (typeof wi !== "undefined") { wi = 0; ci = WORDS[0].length; del = true; hold = 1.6; } });
   if (typed && !reduce) {
     var wi = 0, ci = WORDS[0].length, del = true, hold = 1.6, acc = 0;
     var typeTick = function (dt) {
@@ -288,7 +294,7 @@
   }
 
   /* ---------- contadores ---------- */
-  function fmt(n) { return Math.round(n).toLocaleString("en-US"); }
+  function fmt(n) { return Math.round(n).toLocaleString(isPT() ? "pt-BR" : "en-US"); }
   var counts = Array.prototype.slice.call(document.querySelectorAll(".count"));
   function runCount(el) {
     var to = +el.dataset.to, pre = el.dataset.prefix || "", suf = el.dataset.suffix || "", t0 = null, D = 1400;

@@ -44,7 +44,24 @@ Ficam em `assets/motion.js`:
 - os números que contam até o valor final;
 - a barra de progresso de leitura.
 
-As frases dos robôs estão na lista `SAY`. Quem ativou "reduzir movimento" no sistema vê tudo parado.
+As frases dos robôs estão nas listas `SAY_EN` e `SAY_PT`, e os tipos de projeto em `WORDS_EN` e `WORDS_PT`. Quem ativou "reduzir movimento" no sistema vê tudo parado.
+
+## Enxame de agentes
+
+Fica em `assets/swarm.js` e roda em toda visita:
+
+- no topo, planejadores desenham o wireframe, escritores digitam o nome e a frase, testadores carimbam os números e a estilista escolhe o azul;
+- cada seção (Sobre, Novidades, Projetos, Currículo, Contato e a barra lateral) é construída quando aparece na tela;
+- os traços passam por fora dos blocos, sem cobrir o texto;
+- o botão "Skip" ou a tecla Esc encerram; o botão do robô no topo liga e desliga os agentes, e a escolha fica salva;
+- "Watch the agents build this page", no fim do topo, roda tudo de novo.
+
+## Idioma e tema
+
+- O site abre em inglês. Os botões EN e PT no topo trocam o idioma, e a escolha fica salva no navegador.
+- As traduções ficam em `assets/i18n-data.js`: cada chave é o texto em inglês e o valor é o HTML em português. Ao mudar um texto em inglês no `index.html`, atualize a chave correspondente.
+- Os textos dos botões, títulos e descrições acessíveis ficam em `assets/site.js`.
+- O botão da lua ou do sol troca entre claro e escuro. Sem escolha salva, o site segue o tema do sistema.
 
 ## Ícones e fontes
 

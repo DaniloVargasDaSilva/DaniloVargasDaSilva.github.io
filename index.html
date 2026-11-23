@@ -12,8 +12,8 @@
 <link rel="stylesheet" href="assets/fontawesome/css/brands.min.css">
 <link rel="stylesheet" href="assets/fontawesome/css/solid.min.css">
 <script>
-/* Esconde o topo antes da primeira pintura, para o enxame de agentes construir na frente do visitante. */
-(function(){try{var d=document.documentElement;if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&!sessionStorage.getItem('swarm-built')&&!location.hash){d.classList.add('swarm-pre','swarm-mono');setTimeout(function(){d.classList.remove('swarm-pre','swarm-mono')},12000)}}catch(e){}})();
+/* Antes da primeira pintura: tema e idioma salvos, e o estado inicial do enxame de agentes (topo escondido para ser construído). */
+(function(){var d=document.documentElement;try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')d.setAttribute('data-theme',t);if(localStorage.getItem('lang')==='pt')d.lang='pt-BR';var rm=matchMedia('(prefers-reduced-motion: reduce)').matches;if(!rm&&localStorage.getItem('agents')!=='off'&&!location.hash){d.classList.add('sw-pre','sw-mono');setTimeout(function(){d.classList.remove('sw-pre','sw-mono')},9000)}}catch(e){}})();
 </script>
 <style>
 @font-face{font-family:"Archivo";font-style:normal;font-display:swap;font-weight:100 900;font-stretch:62% 125%;src:url(assets/fonts/archivo-latin.woff2) format("woff2-variations");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
@@ -29,8 +29,9 @@
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
-  :root{ --paper:#101417; --sheet:#161C20; --ink:#E5EAEC; --muted:#98A3A9; --line:#2B353B; --grid:#1C2429; --blue:#8EA4FF; --blue-soft:#1E2747; color-scheme:dark; }
+  :root:not([data-theme="light"]){ --paper:#101417; --sheet:#161C20; --ink:#E5EAEC; --muted:#98A3A9; --line:#2B353B; --grid:#1C2429; --blue:#8EA4FF; --blue-soft:#1E2747; color-scheme:dark; }
 }
+:root[data-theme="dark"]{ --paper:#101417; --sheet:#161C20; --ink:#E5EAEC; --muted:#98A3A9; --line:#2B353B; --grid:#1C2429; --blue:#8EA4FF; --blue-soft:#1E2747; color-scheme:dark; }
 *{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:1.0625rem;line-height:1.72}
@@ -194,15 +195,28 @@ p{margin:0 0 14px;max-width:66ch}
 html{scroll-behavior:smooth}
 footer{border-top:1px solid var(--line);font-family:var(--display);font-stretch:90%;font-size:.88rem;color:var(--muted)}
 footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+/* controles do topo */
+.controls{display:flex;gap:8px;align-items:center;flex:none}
+.ctl{font:600 .82rem var(--display);font-stretch:90%;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;background:var(--sheet);color:var(--ink);border:1px solid var(--line);cursor:pointer}
+.ctl:hover{border-color:var(--ink)}
+.ctl i{font-size:.9rem}
+.lang{display:inline-flex;border:1px solid var(--line);background:var(--sheet);height:32px}
+.lang button{font:700 .78rem var(--display);font-stretch:90%;letter-spacing:.04em;background:none;border:0;color:var(--muted);padding:0 9px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+#agentsBtn[aria-pressed="false"]{color:var(--muted)}
+#agentsBtn[aria-pressed="false"] span{text-decoration:line-through;text-decoration-thickness:1px}
+@media (max-width:560px){.topbar{flex-wrap:wrap}.topbar nav{gap:14px;order:2;width:100%}.controls{order:1;margin-left:auto}#agentsBtn span{display:none}}
 /* enxame de agentes */
-.swarm-pre .topbar .mark,.swarm-pre .topbar nav,.swarm-pre .intro-text h1,.swarm-pre .intro .sub,.swarm-pre .stats>div,.swarm-pre .crane,.swarm-pre .dim{opacity:0}
-.swarm-mono{--blue:var(--muted);--blue-soft:var(--grid)}
+.sw-pre .topbar nav,.sw-pre .topbar .controls,.sw-pre .intro-text h1,.sw-pre .intro .sub,.sw-pre .stats>div,.sw-pre .crane,.sw-pre .dim{opacity:0}
+.sw-ready main>section:not(.sw-done)>*,.sw-ready .body>.side:not(.sw-done)>*{opacity:0}
+.sw-mono{--blue:var(--muted);--blue-soft:var(--grid)}
 .swarm-canvas{position:fixed;inset:0;z-index:60;pointer-events:none}
 .swarm-skip{position:fixed;right:18px;bottom:18px;z-index:61;font:600 .85rem var(--display);font-stretch:90%;background:var(--sheet);color:var(--ink);border:2px solid var(--ink);padding:7px 14px;cursor:pointer}
 .swarm-skip:hover{background:var(--ink);color:var(--sheet)}
 .rebuild{display:block;margin:6px 0 18px auto;font:600 .82rem var(--display);font-stretch:90%;color:var(--muted);background:none;border:0;border-bottom:1px dashed var(--line);padding:2px 0;cursor:pointer}
 .rebuild:hover{color:var(--blue);border-bottom-color:var(--blue)}
 .rebuild[hidden]{display:none}
+@media print{.sw-ready main>section>*,.sw-ready .side>*,.sw-pre .intro-text h1{opacity:1!important}.controls,.rebuild,.swarm-skip,.swarm-canvas{display:none!important}}
 </style>
 </head>
 <body>
@@ -212,7 +226,6 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
   <canvas id="dots" aria-hidden="true"></canvas>
   <div class="wrap hero-in">
     <div class="topbar">
-      <a class="mark" href="#">D. Vargas da Silva</a>
       <nav aria-label="Sections">
         <a href="#about">About</a>
         <a href="#news">News</a>
@@ -220,6 +233,14 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
         <a href="#cv">CV</a>
         <a href="#contact">Contact</a>
       </nav>
+      <div class="controls">
+        <div class="lang" role="group" aria-label="Language / Idioma">
+          <button type="button" data-lang="en" aria-pressed="true" lang="en">EN</button>
+          <button type="button" data-lang="pt" aria-pressed="false" lang="pt-BR">PT</button>
+        </div>
+        <button type="button" class="ctl" id="themeBtn" aria-label="Switch to dark mode"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+        <button type="button" class="ctl" id="agentsBtn" aria-pressed="true"><i class="fa-solid fa-robot" aria-hidden="true"></i><span>Agents</span></button>
+      </div>
     </div>
 
     <div class="intro">
@@ -263,7 +284,7 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
       <canvas id="walkers" aria-label="Small robots walking along the timeline. Click one to make it jump."></canvas>
       </div>
     </div>
-    <button class="rebuild" id="rebuild" type="button" hidden>Watch a swarm of agents rebuild this page</button>
+    <button class="rebuild" id="rebuild" type="button" hidden>Watch the agents build this page</button>
   </div>
 </header>
 
@@ -478,6 +499,8 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
 </div>
 
 <footer><div class="wrap"><span>© 2026 Danilo Vargas da Silva</span><span>Last revised Nov 2026 · hosted on GitHub Pages · <a href="cv.pdf">CV (PDF)</a></span></div></footer>
+<script src="assets/i18n-data.js" defer></script>
+<script src="assets/site.js" defer></script>
 <script src="assets/motion.js" defer></script>
 <script src="assets/swarm.js" defer></script>
 </body>
