@@ -83,7 +83,10 @@
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         if (!i) self.ia = im.width / im.height;
-        if (++n === 2) { self.ready = true; self.resize(); self.fig.classList.add("gl-on"); self.draw(); }
+        if (++n === 2) {
+          self.ready = true; self.fig.classList.add("gl-on"); self.resize(); self.draw();
+          if (self.hero && self.scan >= 1.5) self.fig.classList.add("cut-in");
+        }
       };
       im.src = i ? self.fig.dataset.depth : (self.imgEl.currentSrc || self.imgEl.src);
     });
@@ -96,7 +99,22 @@
       self.tm = [clamp((e.clientX - (r.left + r.width / 2)) / sx, -1, 1), clamp((e.clientY - (r.top + r.height / 2)) / sy, -1, 1)];
       self.lastInput = performance.now(); self.hover = true;
     });
-    zone.addEventListener("pointerleave", function () { self.hover = false; if (!self.hero) self.tm = [0, 0]; });
+    zone.addEventListener("pointerleave", function () { self.hover = false; self.fig.classList.remove("lit"); if (!self.hero) self.tm = [0, 0]; });
+    if (this.hero) {
+      zone.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") self.fig.classList.add("lit"); });
+      var drag = null;
+      this.fig.addEventListener("pointerdown", function (e) {
+        if (e.pointerType === "mouse") return;
+        drag = { x: e.clientX, y: e.clientY, m: self.tm.slice() }; self.fig.classList.add("lit");
+      });
+      this.fig.addEventListener("pointermove", function (e) {
+        if (!drag) return;
+        var r = self.fig.getBoundingClientRect();
+        self.tm = [clamp(drag.m[0] + (e.clientX - drag.x) / (r.width * 0.5), -1, 1), clamp(drag.m[1] + (e.clientY - drag.y) / (r.height * 0.5), -1, 1)];
+        self.lastInput = performance.now();
+      });
+      ["pointerup", "pointercancel"].forEach(function (ev) { self.fig.addEventListener(ev, function () { drag = null; self.fig.classList.remove("lit"); }); });
+    }
     return true;
   };
   Depth.prototype.readColors = function () {
@@ -115,13 +133,40 @@
     // "object-fit: cover" com ponto de foco (data-pos), igual à <img> por baixo
     var ia = this.ia || a, px = parseFloat(this.fig.dataset.pos || 0.5), sx = 1, sy = 1;
     if (ia > a) sx = a / ia; else sy = ia / a;
-    this.gl.uniform2f(this.u.cs, sx, sy); this.gl.uniform2f(this.u.co, (1 - sx) * px, (1 - sy) * 0.5);
+    this.gl.uniform2f(this.u.cs, sx, sy); var py = parseFloat(this.fig.dataset.posy || 0.5);
+    this.gl.uniform2f(this.u.co, (1 - sx) * px, (1 - sy) * py);
+    this.map = { sx: sx, sy: sy, cx: (1 - sx) * px, cy: (1 - sy) * py, zoom: 1 + this.amt * 0.9 };
+    this.placeCut();
+  };
+  Depth.prototype.placeCut = function () {
+    var cut = this.fig.querySelector(".cut"), mp = this.map; if (!cut || !mp) return;
+    var d3 = this.canvas.parentNode, frame = d3.parentNode;
+    var W = d3.offsetWidth, H = d3.offsetHeight, ox = frame.offsetLeft + d3.offsetLeft + frame.clientLeft, oy = frame.offsetTop + d3.offsetTop + frame.clientTop;
+    var ch = parseFloat(this.fig.dataset.cutH || 0.33);
+    // inverso do mapeamento do shader: textura -> tela
+    function vx(t) { return ((t - mp.cx) / mp.sx - 0.5) * mp.zoom + 0.5; }
+    function vy(t) { return ((t - mp.cy) / mp.sy - 0.5) * mp.zoom + 0.5; }
+    var x0 = vx(0), x1 = vx(1), y0 = vy(0), y1 = vy(ch);
+    cut.style.left = (ox + x0 * W) + "px"; cut.style.top = (oy + y0 * H) + "px";
+    cut.style.width = ((x1 - x0) * W) + "px"; cut.style.height = ((y1 - y0) * H) + "px";
+  };
+  Depth.prototype.tilt = function () {
+    if (!this.hero || reduce) return;
+    var x = this.m[0], y = this.m[1] + this.sc;
+    this.fig.style.transform = "perspective(1100px) rotateY(" + (x * 9).toFixed(2) + "deg) rotateX(" + (-y * 7).toFixed(2) + "deg)";
+    this.fig.style.setProperty("--gx", (50 + x * 40).toFixed(1) + "%");
+    this.fig.style.setProperty("--gy", (30 + y * 35).toFixed(1) + "%");
   };
   Depth.prototype.step = function (t, dt) {
     var idle = performance.now() - this.lastInput > 2500;
     if (this.orbit && idle && !reduce) {
       // órbita lenta e pequena quando ninguém mexe
       this.tm = [Math.sin(t * 0.45) * 0.55 * this.orbit, Math.cos(t * 0.33) * 0.3 * this.orbit];
+    }
+    if (this.hero) {
+      var hh = (this.fig.closest(".hero") || document.body).offsetHeight || 1;
+      var tsc = clamp(window.scrollY / hh, 0, 1) * 0.9;
+      this.sc = (this.sc || 0) + (tsc - (this.sc || 0)) * (1 - Math.pow(0.004, dt));
     }
     var k = 1 - Math.pow(0.002, dt);
     this.m[0] += (this.tm[0] - this.m[0]) * k; this.m[1] += (this.tm[1] - this.m[1]) * k;
@@ -130,12 +175,14 @@
       var shown = parseFloat(getComputedStyle(this.fig).opacity) > 0.6;
       if (shown) this.scanStarted = true;
       if (this.scanStarted) this.scan = Math.min(1.5, this.scan + dt / 1.7);
+      if (this.scan > 0.08) this.fig.classList.add("cut-in");
     }
   };
   Depth.prototype.draw = function () {
     if (!this.ready) return;
     var gl = this.gl, u = this.u;
-    gl.uniform2f(u.m, this.m[0], this.m[1]);
+    gl.uniform2f(u.m, this.m[0], this.m[1] + (this.sc || 0));
+    this.tilt();
     gl.uniform1f(u.amt, reduce ? 0 : this.amt);
     gl.uniform1f(u.zoom, 1 + this.amt * 0.9);
     gl.uniform1f(u.scan, this.scan);
@@ -153,6 +200,7 @@
     var btn = fig.querySelector(".depth-btn");
     if (btn) btn.addEventListener("click", function () {
       var on = btn.getAttribute("aria-pressed") !== "true"; btn.setAttribute("aria-pressed", on ? "true" : "false");
+      fig.classList.toggle("depth-on", on);
       d.tcont = on ? 1 : 0; if (reduce) { d.cont = d.tcont; d.draw(); }
     });
   }
@@ -186,7 +234,7 @@
     if (!document.hidden) items.forEach(function (d) {
       if (vis.get(d.fig) === false) return;
       d.step(now / 1000, dt);
-      var moving = Math.abs(d.tm[0] - d.m[0]) + Math.abs(d.tm[1] - d.m[1]) > 0.0005 || Math.abs(d.tcont - d.cont) > 0.002 || (d.hero && d.scan < 1.5);
+      var moving = (d.hero && Math.abs(d.sc - clamp(window.scrollY / ((d.fig.closest(".hero") || document.body).offsetHeight || 1), 0, 1) * 0.9) > 0.001) || Math.abs(d.tm[0] - d.m[0]) + Math.abs(d.tm[1] - d.m[1]) > 0.0005 || Math.abs(d.tcont - d.cont) > 0.002 || (d.hero && d.scan < 1.5);
       if (moving || d.hero || d.orbit) d.draw();
     });
     requestAnimationFrame(loop);
