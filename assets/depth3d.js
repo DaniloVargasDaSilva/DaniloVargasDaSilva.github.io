@@ -16,14 +16,14 @@
   var VS = "attribute vec2 p;varying vec2 v;void main(){v=p*.5+.5;v.y=1.-v.y;gl_Position=vec4(p,0.,1.);}";
   var FS = [
     "precision mediump float;",
-    "uniform sampler2D img,dep;uniform vec2 m,ratio;uniform float amt,focus,scan,cont,zoom;uniform vec3 blue,paper;",
+    "uniform sampler2D img,dep;uniform vec2 m,ratio,cs,co;uniform float amt,focus,scan,cont,zoom;uniform vec3 blue,paper;",
     "varying vec2 v;",
     "float D(vec2 u){vec4 t=texture2D(dep,u);return t.r*.99611+t.g*.00389;}",
     "void main(){",
-    "  vec2 u=(v-.5)/zoom+.5;",
+    "  vec2 u=((v-.5)/zoom+.5)*cs+co;",
     // deslocamento em 3 passos: aproxima o paralaxe de verdade sem custo alto
     "  vec2 o=vec2(0.);float d=D(u);",
-    "  for(int i=0;i<3;i++){o=m*(d-focus)*amt*ratio;d=D(u+o);}",
+    "  for(int i=0;i<3;i++){o=m*(d-focus)*amt*ratio*cs;d=D(u+o);}",
     "  vec2 q=clamp(u+o,0.001,.999);",
     "  vec3 c=texture2D(img,q).rgb;",
     "  float dz=D(q);",
@@ -50,6 +50,7 @@
   function Depth(fig) {
     this.fig = fig; this.canvas = fig.querySelector("canvas"); this.imgEl = fig.querySelector("img");
     this.hero = fig.classList.contains("hero-fig");
+    this.orbit = parseFloat(fig.dataset.orbit || (this.hero ? 1 : 0));
     this.amt = parseFloat(fig.dataset.amount || (this.hero ? 0.045 : 0.035));
     this.m = [0, 0]; this.tm = [0, 0]; this.lastInput = -1e9; this.cont = 0; this.tcont = 0;
     this.scan = this.hero && !reduce ? -0.02 : 1.5; this.scanStarted = false; this.on = false; this.hover = false;
@@ -68,7 +69,7 @@
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
     var loc = gl.getAttribLocation(pr, "p"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
     this.gl = gl; this.u = {};
-    ["img", "dep", "m", "ratio", "amt", "focus", "scan", "cont", "zoom", "blue", "paper"].forEach(function (n) { self.u[n] = gl.getUniformLocation(pr, n); });
+    ["img", "dep", "m", "ratio", "cs", "co", "amt", "focus", "scan", "cont", "zoom", "blue", "paper"].forEach(function (n) { self.u[n] = gl.getUniformLocation(pr, n); });
     gl.uniform1i(this.u.img, 0); gl.uniform1i(this.u.dep, 1);
     gl.uniform1f(this.u.focus, parseFloat(this.fig.dataset.focus || 0.8));
     this.readColors();
@@ -81,6 +82,7 @@
         try { gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, im); } catch (e) { return; }
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        if (!i) self.ia = im.width / im.height;
         if (++n === 2) { self.ready = true; self.resize(); self.fig.classList.add("gl-on"); self.draw(); }
       };
       im.src = i ? self.fig.dataset.depth : (self.imgEl.currentSrc || self.imgEl.src);
@@ -110,12 +112,16 @@
     // deslocamento igual nos dois eixos, independente da proporção da foto
     var a = r.width / Math.max(1, r.height);
     this.gl.uniform2f(this.u.ratio, a > 1 ? 1 / a : 1, a > 1 ? 1 : a);
+    // "object-fit: cover" com ponto de foco (data-pos), igual à <img> por baixo
+    var ia = this.ia || a, px = parseFloat(this.fig.dataset.pos || 0.5), sx = 1, sy = 1;
+    if (ia > a) sx = a / ia; else sy = ia / a;
+    this.gl.uniform2f(this.u.cs, sx, sy); this.gl.uniform2f(this.u.co, (1 - sx) * px, (1 - sy) * 0.5);
   };
   Depth.prototype.step = function (t, dt) {
     var idle = performance.now() - this.lastInput > 2500;
-    if (this.hero && idle && !reduce) {
+    if (this.orbit && idle && !reduce) {
       // órbita lenta e pequena quando ninguém mexe
-      this.tm = [Math.sin(t * 0.45) * 0.55, Math.cos(t * 0.33) * 0.3];
+      this.tm = [Math.sin(t * 0.45) * 0.55 * this.orbit, Math.cos(t * 0.33) * 0.3 * this.orbit];
     }
     var k = 1 - Math.pow(0.002, dt);
     this.m[0] += (this.tm[0] - this.m[0]) * k; this.m[1] += (this.tm[1] - this.m[1]) * k;
@@ -181,7 +187,7 @@
       if (vis.get(d.fig) === false) return;
       d.step(now / 1000, dt);
       var moving = Math.abs(d.tm[0] - d.m[0]) + Math.abs(d.tm[1] - d.m[1]) > 0.0005 || Math.abs(d.tcont - d.cont) > 0.002 || (d.hero && d.scan < 1.5);
-      if (moving || d.hero) d.draw();
+      if (moving || d.hero || d.orbit) d.draw();
     });
     requestAnimationFrame(loop);
   }

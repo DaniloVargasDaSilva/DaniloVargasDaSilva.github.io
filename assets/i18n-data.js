@@ -30,3 +30,9 @@ Object.assign(window.SITE_PT,{
 "OpenAI hackathon in São Paulo, where our team placed 5th":"Hackathon da OpenAI em São Paulo, onde nosso time ficou em 5º",
 "Arriving at the OpenAI DevDay Community Hackathon":"Chegando ao Hackathon da comunidade OpenAI DevDay"
 });
+Object.assign(window.SITE_PT,{
+"Arriving at OpenAI DevDay Exchange, São Paulo, Oct 2026":"Chegando ao OpenAI DevDay Exchange, São Paulo, out 2026",
+"On the DevDay Exchange stage, São Paulo":"No palco do DevDay Exchange, São Paulo",
+"OpenAI DevDay Community Hackathon, São Paulo, Oct 2026":"Hackathon da comunidade OpenAI DevDay, São Paulo, out 2026"
+});
+window.SITE_I18N_SEL+=", .slide figcaption";

@@ -131,3 +131,66 @@
   });
   window.addEventListener("afterprint", function () { opened.forEach(function (d) { d.open = false; }); opened = []; });
 })();
+
+/* Carrossel de fotos: arrastar/rolar nativo com encaixe, setas, pontos, teclado e troca automática
+   (a cada 6 s, pausa com o mouse em cima, com foco, fora da tela ou pelo botão; desligada com "reduzir movimento"). */
+(function () {
+  "use strict";
+  var car = document.querySelector(".car"); if (!car) return;
+  var track = car.querySelector(".car-track"), slides = Array.prototype.slice.call(track.children);
+  var dots = Array.prototype.slice.call(car.querySelectorAll(".car-dots button")), count = car.querySelector(".car-count");
+  var btn = function (k) { return car.querySelector('[data-car="' + k + '"]'); };
+  var pauseBtn = btn("pause"), cur = 0, n = slides.length;
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var TX = {
+    en: { region: "Event photos", photo: "Photo", prev: "Previous photo", next: "Next photo", pause: "Pause slideshow", play: "Play slideshow" },
+    pt: { region: "Fotos de eventos", photo: "Foto", prev: "Foto anterior", next: "Próxima foto", pause: "Pausar fotos", play: "Retomar fotos" }
+  };
+  function t() { return TX[document.documentElement.lang === "pt-BR" ? "pt" : "en"]; }
+  function go(i) { cur = (i + n) % n; track.scrollTo({ left: slides[cur].offsetLeft - track.offsetLeft, behavior: reduce ? "auto" : "smooth" }); }
+  function paint() {
+    dots.forEach(function (d, i) { if (i === cur) d.setAttribute("aria-current", "true"); else d.removeAttribute("aria-current"); });
+    if (count) count.textContent = (cur + 1) + " / " + n;
+  }
+  function labels() {
+    var x = t(); car.setAttribute("aria-label", x.region);
+    dots.forEach(function (d, i) { d.setAttribute("aria-label", x.photo + " " + (i + 1)); });
+    btn("prev").setAttribute("aria-label", x.prev); btn("next").setAttribute("aria-label", x.next);
+    var stopped = pauseBtn.getAttribute("aria-pressed") === "true";
+    pauseBtn.setAttribute("aria-label", stopped ? x.play : x.pause); pauseBtn.title = pauseBtn.getAttribute("aria-label");
+    btn("prev").title = x.prev; btn("next").title = x.next;
+  }
+  var raf = 0;
+  track.addEventListener("scroll", function () {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(function () { var i = Math.round(track.scrollLeft / Math.max(1, track.clientWidth)); if (i !== cur) { cur = Math.max(0, Math.min(n - 1, i)); paint(); } });
+  }, { passive: true });
+  dots.forEach(function (d, i) { d.addEventListener("click", function () { go(i); restart(); }); });
+  btn("prev").addEventListener("click", function () { go(cur - 1); restart(); });
+  btn("next").addEventListener("click", function () { go(cur + 1); restart(); });
+  track.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowRight") { e.preventDefault(); go(cur + 1); restart(); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); go(cur - 1); restart(); }
+  });
+  window.addEventListener("resize", function () { track.scrollLeft = slides[cur].offsetLeft - track.offsetLeft; });
+
+  // troca automática
+  var timer = 0, hovering = false, focused = false, onScreen = false, stopped = reduce;
+  if (reduce) pauseBtn.setAttribute("aria-pressed", "true");
+  function canRun() { return !stopped && !hovering && !focused && onScreen && !document.hidden; }
+  function restart() { clearInterval(timer); timer = setInterval(function () { if (canRun()) go(cur + 1); }, 6000); }
+  car.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") hovering = true; });
+  car.addEventListener("pointerleave", function () { hovering = false; });
+  // pausa com foco de teclado (não com clique do mouse)
+  function kbFocus() { try { return !!car.querySelector(":focus-visible"); } catch (e) { return car.contains(document.activeElement); } }
+  car.addEventListener("focusin", function () { focused = kbFocus(); });
+  car.addEventListener("focusout", function () { setTimeout(function () { focused = kbFocus(); }, 0); });
+  track.addEventListener("touchstart", function () { restart(); }, { passive: true });
+  pauseBtn.addEventListener("click", function () {
+    stopped = !stopped; pauseBtn.setAttribute("aria-pressed", stopped ? "true" : "false"); labels(); restart();
+  });
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { onScreen = es[0].isIntersecting; }, { threshold: 0.5 }).observe(car);
+  else onScreen = true;
+  window.addEventListener("langchange", labels);
+  labels(); paint(); restart();
+})();

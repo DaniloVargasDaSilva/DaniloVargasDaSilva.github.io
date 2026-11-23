@@ -82,14 +82,22 @@ h1,h2,h3{font-family:var(--display);font-stretch:85%;margin:0;text-wrap:balance}
 .depth-btn[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:var(--sheet)}
 .hero-fig:not(.gl-on) .depth-btn{display:none}
 @media (max-width:900px){.hero-fig{max-width:400px}}
-.shots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:28px}
-.shot{margin:0}
-.shot.wide{grid-column:1/-1}
-.shot .d3{aspect-ratio:3/2;border:1px solid var(--line)}
-.shot.wide .d3{aspect-ratio:16/9}
-.shot.tall .d3{aspect-ratio:3/4}
-.shot figcaption{font-family:var(--display);font-stretch:90%;font-size:.84rem;color:var(--muted);padding-top:6px;line-height:1.3}
-@media (max-width:560px){.shots{grid-template-columns:1fr}}
+.car{margin-top:28px}
+.car-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;overscroll-behavior-x:contain}
+.car-track::-webkit-scrollbar{display:none}
+.car-track:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.slide{flex:0 0 100%;margin:0;scroll-snap-align:start;scroll-snap-stop:always}
+.slide .d3{aspect-ratio:4/1;border:1px solid var(--line)}
+.slide figcaption{font-family:var(--display);font-stretch:90%;font-size:.86rem;color:var(--muted);padding-top:8px;line-height:1.3}
+.car-ctl{display:flex;align-items:center;gap:8px;margin-top:10px}
+.car-dots{display:flex;gap:6px;margin-right:auto}
+.car-dots button{width:18px;height:24px;padding:0;border:0;background:none;cursor:pointer;position:relative}
+.car-dots button::after{content:"";position:absolute;left:0;right:0;top:11px;height:2px;background:var(--line);transition:background .2s}
+.car-dots button[aria-current="true"]::after{background:var(--blue);height:3px;top:10px}
+.car-count{font-family:var(--display);font-stretch:90%;font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums;margin-right:4px}
+.car-btn{width:32px;justify-content:center;padding:0}
+.car-btn[aria-pressed="true"] i::before{content:"\f04b"}
+@media (max-width:640px){.slide .d3{aspect-ratio:2/1}}
 .crane{margin:0;background:var(--sheet);border:2px solid var(--ink);padding:0}
 .crane canvas{display:block;width:100%;height:auto;image-rendering:pixelated}
 .crane figcaption{font-family:var(--display);font-stretch:90%;font-size:.82rem;color:var(--muted);padding:6px 10px;border-top:2px solid var(--ink)}
@@ -284,7 +292,7 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
 .rebuild{display:block;margin:6px 0 18px auto;font:600 .82rem var(--display);font-stretch:90%;color:var(--muted);background:none;border:0;border-bottom:1px dashed var(--line);padding:2px 0;cursor:pointer}
 .rebuild:hover{color:var(--blue);border-bottom-color:var(--blue)}
 .rebuild[hidden]{display:none}
-@media print{.sw-ready main>section>*,.sw-ready .side>*,.sw-pre .intro-text h1{opacity:1!important}.controls,.rebuild,.swarm-skip,.swarm-canvas,.top,.status,.path,.shots,.crane{display:none!important}details.more summary{display:none}}
+@media print{.sw-ready main>section>*,.sw-ready .side>*,.sw-pre .intro-text h1{opacity:1!important}.controls,.rebuild,.swarm-skip,.swarm-canvas,.top,.status,.path,.car,.crane{display:none!important}details.more summary{display:none}}
 </style>
 </head>
 <body>
@@ -408,27 +416,32 @@ footer .wrap{padding:18px 20px 36px;display:flex;justify-content:space-between;g
         <li><time datetime="2021-09">Sep 2021</time><span>Started contributing to the Supabase community.</span></li>
         <li><time datetime="2020-07">Jul 2020</time><span>Moved from industrial machining into software, building internal tools for technical support.</span></li>
       </ul>
-      <div class="shots">
-        <figure class="shot wide depth3d" data-depth="assets/photos/devday-exchange-depth.png" data-focus="0.75">
-          <div class="d3"><img src="assets/photos/devday-exchange.jpg" width="1200" height="675" loading="lazy" alt="Danilo giving a thumbs up on the OpenAI DevDay Exchange stage in São Paulo"><canvas aria-hidden="true"></canvas></div>
-          <figcaption>OpenAI DevDay Exchange, São Paulo, Oct 2026</figcaption>
-        </figure>
-        <figure class="shot tall depth3d" data-depth="assets/photos/hackathon-badge-depth.png" data-focus="0.8">
-          <div class="d3"><img src="assets/photos/hackathon-badge.jpg" width="720" height="960" loading="lazy" alt="Danilo wearing his OpenAI DevDay Community Hackathon badge in São Paulo"><canvas aria-hidden="true"></canvas></div>
-          <figcaption>OpenAI hackathon in São Paulo, where our team placed 5th</figcaption>
-        </figure>
-        <figure class="shot tall depth3d" data-depth="assets/photos/hackathon-thumbs-depth.png" data-focus="0.75">
-          <div class="d3"><img src="assets/photos/hackathon-thumbs.jpg" width="720" height="960" loading="lazy" alt="Danilo giving a thumbs up next to the OpenAI DevDay Community Hackathon banner"><canvas aria-hidden="true"></canvas></div>
-          <figcaption>Arriving at the OpenAI DevDay Community Hackathon</figcaption>
-        </figure>
-        <figure class="shot depth3d" data-depth="assets/photos/hack-brasil-depth.png" data-focus="0.75">
-          <div class="d3"><img src="assets/photos/hack-brasil.jpg" width="1200" height="675" loading="lazy" alt="Danilo next to the Hack Brasil banner at the Campinas meetup"><canvas aria-hidden="true"></canvas></div>
-          <figcaption>Hack Brasil meetup, Campinas, Nov 2026</figcaption>
-        </figure>
-        <figure class="shot depth3d" data-depth="assets/photos/hackathon-group-depth.png" data-focus="0.6">
-          <div class="d3"><img src="assets/photos/hackathon-group.jpg" width="800" height="533" loading="lazy" alt="Group photo of the OpenAI DevDay Community Hackathon participants in São Paulo"><canvas aria-hidden="true"></canvas></div>
-          <figcaption>OpenAI DevDay Community Hackathon, Oct 2026</figcaption>
-        </figure>
+      <div class="car" role="region" aria-roledescription="carousel" aria-label="Event photos">
+        <div class="car-track" tabindex="0">
+          <figure class="slide depth3d" data-depth="assets/photos/car-devday-sign-depth.png" data-pos=".55" data-focus="0.7" data-orbit="0.7" aria-roledescription="slide" aria-label="1 / 4">
+            <div class="d3"><img src="assets/photos/car-devday-sign.jpg" width="1400" height="350" loading="lazy" alt="The OpenAI DevDay Exchange sign on a wall of plants in São Paulo" style="object-position:55% 50%"><canvas aria-hidden="true"></canvas></div>
+            <figcaption>Arriving at OpenAI DevDay Exchange, São Paulo, Oct 2026</figcaption>
+          </figure>
+          <figure class="slide depth3d" data-depth="assets/photos/car-devday-stage-depth.png" data-pos=".68" data-focus="0.7" data-orbit="0.7" aria-roledescription="slide" aria-label="2 / 4">
+            <div class="d3"><img src="assets/photos/car-devday-stage.jpg" width="1400" height="350" loading="lazy" alt="Danilo giving a thumbs up on the OpenAI DevDay Exchange stage" style="object-position:68% 50%"><canvas aria-hidden="true"></canvas></div>
+            <figcaption>On the DevDay Exchange stage, São Paulo</figcaption>
+          </figure>
+          <figure class="slide depth3d" data-depth="assets/photos/car-hack-brasil-depth.png" data-pos=".6" data-focus="0.7" data-orbit="0.7" aria-roledescription="slide" aria-label="3 / 4">
+            <div class="d3"><img src="assets/photos/car-hack-brasil.jpg" width="1376" height="344" loading="lazy" alt="Danilo next to the Hack Brasil banner at the Campinas meetup" style="object-position:60% 50%"><canvas aria-hidden="true"></canvas></div>
+            <figcaption>Hack Brasil meetup, Campinas, Nov 2026</figcaption>
+          </figure>
+          <figure class="slide depth3d" data-depth="assets/photos/car-hackathon-group-depth.png" data-pos=".5" data-focus="0.7" data-orbit="0.7" aria-roledescription="slide" aria-label="4 / 4">
+            <div class="d3"><img src="assets/photos/car-hackathon-group.jpg" width="1016" height="254" loading="lazy" alt="Group photo of the OpenAI DevDay Community Hackathon participants" style="object-position:50% 50%"><canvas aria-hidden="true"></canvas></div>
+            <figcaption>OpenAI DevDay Community Hackathon, São Paulo, Oct 2026</figcaption>
+          </figure>
+        </div>
+        <div class="car-ctl">
+          <div class="car-dots"><button type="button" aria-label="Photo 1"></button><button type="button" aria-label="Photo 2"></button><button type="button" aria-label="Photo 3"></button><button type="button" aria-label="Photo 4"></button></div>
+          <span class="car-count" aria-hidden="true">1 / 4</span>
+          <button type="button" class="ctl car-btn" data-car="pause" aria-pressed="false" aria-label="Pause slideshow"><i class="fa-solid fa-pause" aria-hidden="true"></i></button>
+          <button type="button" class="ctl car-btn" data-car="prev" aria-label="Previous photo"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+          <button type="button" class="ctl car-btn" data-car="next" aria-label="Next photo"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+        </div>
       </div>
     </section>
 
